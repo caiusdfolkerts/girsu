@@ -1,6 +1,6 @@
-# Girsu
+# Reconstructing Ur III
 
-Girsu makes a substantial corpus of ancient history usable in code. We have accounted for all 19,208 text-bearing Girsu sources in our catalogue and produced 18,409 current structured interpretations, containing 172,723 entries and 171,251 explicit relation objects. The release brings those interpretations, their source texts and their evidence together with a standalone Python reader.
+The Ur III state that governed Mesopotamia from 2112-2004 BCE was one of the most beaurocratic states of human history.  
 
 The achievement is document-level understanding represented as data. Girsu records who is involved, what is being counted or transferred, how entries relate, which totals include which details, and what supports each interpretation. Researchers can search the collection, assemble dossiers and analyse these relationships computationally, then follow a result back to the exact passage and reasoning behind it.
 

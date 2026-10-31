@@ -1,0 +1,91 @@
+{
+  "format": "girsu-corrected-graph-certificate-v1",
+  "source_database_sha256": "b02f70a3c3c01bfe96428e04ce674f19e21dbb620a463dd699034915c644205c",
+  "counts": {
+    "corrected_labels": 91835,
+    "records": 18412,
+    "nodes": 5073009,
+    "incidences": 8683442
+  },
+  "correction_rule": "canonical-kind-discriminants-v1",
+  "correction_operation": "Only nodes[][2] replaced after asserting old label and exact record-version/pointer coverage. Canonical bytes and incidences unchanged.",
+  "excluded": "All identity-directory outputs; identity reconstruction, global entity merging and closure are not exported. Authored source-local assertions remain.",
+  "datasets": {
+    "connected": {
+      "rows": 18412,
+      "bytes": 106923502
+    },
+    "shared_incidences": {
+      "rows": 18412,
+      "bytes": 8888785
+    },
+    "accounting_accounts": {
+      "rows": 18412,
+      "bytes": 20118220
+    },
+    "accounting_linear_systems": {
+      "rows": 281,
+      "bytes": 152959
+    },
+    "accounting_conclusions": {
+      "rows": 91,
+      "bytes": 15454
+    },
+    "temporal": {
+      "rows": 14495,
+      "bytes": 3256980
+    },
+    "alternatives": {
+      "rows": 3537,
+      "bytes": 943000
+    },
+    "alternative_connections": {
+      "rows": 13,
+      "bytes": 3228
+    },
+    "count_bounds": {
+      "rows": 9,
+      "bytes": 9625
+    },
+    "shared_hubs": {
+      "rows": 12074,
+      "bytes": 176566
+    },
+    "documentary_bridges": {
+      "rows": 144,
+      "bytes": 5485
+    },
+    "cross_record_citations": {
+      "rows": 106,
+      "bytes": 11285
+    },
+    "unresolved_documentary_citations": {
+      "rows": 5,
+      "bytes": 336
+    }
+  },
+  "proof_resolution": "Upstream artifact names and SHA256 remain provenance. Map names to dataset source entries; index original_line maps zero-based logical upstream rows to independent partitions. Upstream proof jsonl_line fields are ONE based: subtract 1 to match index original_line.",
+  "dataset_semantics": {
+    "connected": "Typed canonical incidence, not blanket historical truth; nodes are record-version+pointer.",
+    "shared_hubs": "Shared vocabulary/exact descriptions only, never historical entity identity.",
+    "accounting_conclusions": "Conditional deduplicated conclusions; all156 proof artifact locators resolve in shipped accounting datasets.",
+    "count_bounds": "Nine conditional novel bounds; exact equations, premises and proof DAG retained.",
+    "alternatives": "Conditional possibilities retained, not selected as adopted truth."
+  },
+  "documentary_identity_unions": 0,
+  "base_manifest_additional_counts": {
+    "convention_edges": 4422,
+    "candidate_nodes": 24520
+  },
+  "index_contract": {
+    "format": "gzip-compressed JSON array",
+    "fields": {
+      "original_line": "Zero-based upstream logical row",
+      "part": "Sibling independently readable .jsonl.gz filename",
+      "line": "Zero-based row in that part",
+      "version_hash": "Exact canonical version when single-record scoped",
+      "source_id": "Catalogue handle when available"
+    },
+    "proof_line_numbering": "Upstream accounting proof jsonl_line is one based; subtract1 before original_line lookup"
+  }
+}

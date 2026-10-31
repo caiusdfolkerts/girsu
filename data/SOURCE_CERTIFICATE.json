@@ -1,0 +1,48 @@
+{
+  "source_database_sha256": "b02f70a3c3c01bfe96428e04ce674f19e21dbb620a463dd699034915c644205c",
+  "source_release_commit": "00e8cbe58e49885ad363581459eb1ce03844426e",
+  "counts": {
+    "records": 18412,
+    "current": 18409,
+    "canonical_bytes": 383326128,
+    "archival_source_ids": [
+      "P110939",
+      "P111261",
+      "P111282"
+    ],
+    "sources": 19208,
+    "reconstruction_origin_sources": 91,
+    "originals": 38046,
+    "original_bytes": 23010299,
+    "catalogue_only": 11048,
+    "availability": 282,
+    "aliases": 1,
+    "admission": 2553
+  },
+  "projection_removed_field_counts": {
+    "ledger/canonical/lease": 18926,
+    "ledger/canonical/token": 18926,
+    "ledger/current_delivery/lease": 16610,
+    "ledger/current_delivery/token": 16610,
+    "ledger/registered_original_artifact/capture_origin": 19208,
+    "ledger/archival_selection/historical_evidence/expected_current_source/lease": 3,
+    "ledger/archival_selection/historical_evidence/expected_current_source/token": 3,
+    "ledger/archival_selection/historical_evidence/historical_author_provenance/job_source/lease": 3,
+    "ledger/archival_selection/historical_evidence/historical_author_provenance/job_source/token": 3,
+    "ledger/archival_selection/historical_evidence/historical_decision/batch/lease": 3,
+    "ledger/archival_selection/historical_evidence/historical_decision/batch/token": 3,
+    "ledger/archival_selection/historical_evidence/historical_finalization/batch/lease": 3,
+    "ledger/archival_selection/historical_evidence/historical_finalization/batch/token": 3,
+    "ledger/recovery_hold/provenance/JSON/prior_state/lease": 10,
+    "ledger/recovery_hold/provenance/JSON/prior_state/token": 10,
+    "ledger/recovery_hold_all_rows/*/provenance/JSON/prior_state/lease": 10,
+    "ledger/recovery_hold_all_rows/*/provenance/JSON/prior_state/token": 10,
+    "aliases/evidence/policy_source_entry/block_event/payload/JSON/token": 1,
+    "aliases/evidence/policy_source_entry/source_preimage/lease": 1,
+    "aliases/evidence/policy_source_entry/source_preimage/token": 1,
+    "admission/local_author_finalization/raw_local_receipt/token": 255,
+    "admission/supporting_original_root": 2553,
+    "admission/cloud_maintenance_finalization/original_mac_origin_receipt/raw_local_receipt/token": 17
+  },
+  "projection_note": "Canonical JSON and original bytes are exact. Scientific ledgers/admission preserve all remaining fields after removing only explicitly enumerated operational structural paths. Only enumerated nested provenance strings with workflow lease/token fields are parsed and reencoded as strings; original and exported string hashes and exact changed paths are in PROJECTION_CHANGES.jsonl.gz. Retained historical paths are provenance labels, not runtime dependencies. Historical payload byte bindings are preserved without duplicate transport payloads. No ga/gp transaction receipt tables or builder/checkpoint artifacts are included."
+}

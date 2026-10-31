@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "canonical_node_pointers": 5073009,
+    "incidence_reference_pointers": 8683442,
+    "resolved_target_pointers": 4620436,
+    "records": 18412
+  },
+  "failures": [],
+  "source_mode": "read-only",
+  "identity_unions": "all empty"
+}

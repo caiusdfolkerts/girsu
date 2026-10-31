@@ -1,0 +1,15 @@
+{
+  "accounting_proof_references": 156,
+  "missing_artifacts": 0,
+  "missing_logical_rows": 0,
+  "missing_proof_pointers": 0,
+  "hash_mismatches": 0,
+  "all_partition_hashes_and_sizes_verified": true,
+  "all_indexes_complete_and_ordered": true,
+  "proof_line_numbering": "Upstream jsonl_line is one-based; index original_line is zero-based",
+  "allowed_sources": [
+    "accounts.jsonl.gz",
+    "linear_systems.jsonl.gz"
+  ],
+  "global_identity_outputs_exported": false
+}

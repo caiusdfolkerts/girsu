@@ -1,0 +1,1 @@
+{"format":"girsu.partition-index.v1","rows":1,"files":[{"path":"data/aliases/part-00000.jsonl.gz","rows":1,"sha256":"4fc18bbc168eda67de6e5fac52c892ef635c809e92546199ca9b933b906e8451","bytes":1404,"first_source_id":"P142584","last_source_id":"P142584"}],"sources":{"P142584":[[0,0]]}}

@@ -1,0 +1,7 @@
+{
+  "counts": {
+    "resolved_explicit_version_pointer_pairs": 902153
+  },
+  "failures": [],
+  "scope": "All explicit version_hash/json_pointer objects in accounting, alternatives, count bounds, documentary bridge datasets; explicit resolved:false kept as unresolved, not invented."
+}

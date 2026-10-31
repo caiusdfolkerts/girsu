@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "reader_sha256": "d0df6ade9f81dea64c8473d52d5e92830d7105f6b42b909e3bb45a98dcf7faa7",
+  "test_suite": "python -I -S -m unittest discover -s tests -v",
+  "tests": 27,
+  "failures": 0,
+  "errors": 0,
+  "default_data": "data/default_records/index.json",
+  "source_and_graph_validation": "data/VALIDATION.json",
+  "known_candidate_encoding_issues": "data/KNOWN_ENCODING_ISSUES.json",
+  "default_policy": {
+    "structured_sets": 3537,
+    "typed_selected": 26,
+    "typed_held": 3511,
+    "prose_selected": 1,
+    "source_anchor_verified": 13,
+    "canonical_assertion_verified": 14,
+    "source_qualified_annotations_not_proven_branches": 10601
+  },
+  "independent_checks": [
+    "All 18,412 default row hashes, source versions and original bindings",
+    "18,409 current records plus 3 explicit archives",
+    "All 5,312 held target occurrences null or beneath null",
+    "156 cached evidence proof references",
+    "106 canonical citations, including 5 unresolved with exact original witnesses",
+    "3,037 default graph pointer checks",
+    "Source and cache mutation isolation",
+    "One default, including null; raw evidence available only through explicit access",
+    "Written total 217 and discrepancy 20 unchanged; no balancing",
+    "Exact per-quantity native-standard provenance",
+    "Application-independent fields and native labels preserved; no semantic reclassification"
+  ]
+}

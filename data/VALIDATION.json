@@ -1,0 +1,26 @@
+{
+  "format": "girsu-source-consumer-validation.v1",
+  "canonical_records": 18412,
+  "current_records": 18409,
+  "archival_records": 3,
+  "registered_sources": 19208,
+  "catalogue_only_sources": 11048,
+  "catalogue_total": 30256,
+  "canonical_payload_bytes": 383326128,
+  "original_bytes": 23010299,
+  "authored_source_local_coreference_assertions": 3787,
+  "authored_source_local_coreference_records": 2391,
+  "source_database_sha256": "b02f70a3c3c01bfe96428e04ce674f19e21dbb620a463dd699034915c644205c",
+  "checks": [
+    "Exact UTF-8 canonical record payload hashes matched every selected version",
+    "All original byte hashes matched",
+    "No unreferenced generated source partitions",
+    "Current-only consumer rejects all three archival sources",
+    "Accounting proof references156 fully resolve by original artifact hash, original logical row and JSON pointer",
+    "Source-index hash and source-row binding reject deliberately corrupted indexes",
+    "Read-only standard-library consumer has no database/build/network/runtime dependency"
+  ],
+  "identity_scope": "No identity-reconstruction data or global closure exported; exact authored source-local statements retained.",
+  "review_status": "Source/graph independent audit passed; research-view and final manifest validation recorded separately.",
+  "original_witness_rows": 38046
+}

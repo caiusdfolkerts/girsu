@@ -1,0 +1,254 @@
+{
+  "scope": "13 candidate options in 8 qualification sets, not errors in all source records or a scientific elimination of these alternatives. Their exact original encodings and diagnostics remain inspectable. No default selects them.",
+  "sets": 8,
+  "options": 13,
+  "issues": [
+    {
+      "source_id": "P133012",
+      "version_hash": "7c16b707e7d147ceac2a1d2ee7308827807c2effd49cd8e2ebdd2ef66de4b95d",
+      "qualification_pointer": "/qualifications/11",
+      "option_pointer": "/qualifications/11/alternatives/options/1",
+      "option_id": "opt4",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/entries/1/measurements/0/adopted/population_ref",
+          "target_id": "m2",
+          "field": "population_ref"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P201235",
+      "version_hash": "5bb4a813730048749326e601998a4757bc5609bd4c4ac85cc0ae44a6873c2ad3",
+      "qualification_pointer": "/qualifications/13",
+      "option_pointer": "/qualifications/13/alternatives/options/0",
+      "option_id": "nearest_six_gur",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/13/subject_id",
+          "target_id": "entry19",
+          "field": "subject_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P202664",
+      "version_hash": "1150182cd64520d3b689b4c54240741e83bdf54018b3fc12b43bbebcdffba9f5",
+      "qualification_pointer": "/qualifications/2",
+      "option_pointer": "/qualifications/2/alternatives/options/0",
+      "option_id": "opt_inscription_near_8",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/2/subject_id",
+          "target_id": "item3",
+          "field": "subject_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P202664",
+      "version_hash": "1150182cd64520d3b689b4c54240741e83bdf54018b3fc12b43bbebcdffba9f5",
+      "qualification_pointer": "/qualifications/3",
+      "option_pointer": "/qualifications/3/alternatives/options/0",
+      "option_id": "opt_inscription_near_12",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/3/subject_id",
+          "target_id": "item5",
+          "field": "subject_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P315663",
+      "version_hash": "04d9339c3ea0db5b6b1be657ddc5b6a7345635696fc2118f83e1684802a2e12f",
+      "qualification_pointer": "/qualifications/87",
+      "option_pointer": "/qualifications/87/alternatives/options/0",
+      "option_id": "option2",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/74/object_id",
+          "target_id": "entry43",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P315663",
+      "version_hash": "04d9339c3ea0db5b6b1be657ddc5b6a7345635696fc2118f83e1684802a2e12f",
+      "qualification_pointer": "/qualifications/87",
+      "option_pointer": "/qualifications/87/alternatives/options/1",
+      "option_id": "option3",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/74/object_id",
+          "target_id": "entry44",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P315663",
+      "version_hash": "04d9339c3ea0db5b6b1be657ddc5b6a7345635696fc2118f83e1684802a2e12f",
+      "qualification_pointer": "/qualifications/87",
+      "option_pointer": "/qualifications/87/alternatives/options/2",
+      "option_id": "option4",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/74/object_id",
+          "target_id": "entry45",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P315663",
+      "version_hash": "04d9339c3ea0db5b6b1be657ddc5b6a7345635696fc2118f83e1684802a2e12f",
+      "qualification_pointer": "/qualifications/87",
+      "option_pointer": "/qualifications/87/alternatives/options/3",
+      "option_id": "option5",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/74/object_id",
+          "target_id": "entry46",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P416112",
+      "version_hash": "6a6685ff04b1afa3411a125c43bca50a6fbf95288436546ff33a77cc452ca88b",
+      "qualification_pointer": "/qualifications/96",
+      "option_pointer": "/qualifications/96/alternatives/options/0",
+      "option_id": "option1",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/49/object_id",
+          "target_id": "entry60",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P416112",
+      "version_hash": "6a6685ff04b1afa3411a125c43bca50a6fbf95288436546ff33a77cc452ca88b",
+      "qualification_pointer": "/qualifications/96",
+      "option_pointer": "/qualifications/96/alternatives/options/1",
+      "option_id": "option2",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/49/object_id",
+          "target_id": "entry61",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P207133",
+      "version_hash": "6e836dccbf7a351046379dc31526d9e96158f39e9d3c7facf0fe18baf01fe28c",
+      "qualification_pointer": "/qualifications/6",
+      "option_pointer": "/qualifications/6/alternatives/options/0",
+      "option_id": "option6",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/2/object_id",
+          "target_id": "entry3",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P207133",
+      "version_hash": "6e836dccbf7a351046379dc31526d9e96158f39e9d3c7facf0fe18baf01fe28c",
+      "qualification_pointer": "/qualifications/6",
+      "option_pointer": "/qualifications/6/alternatives/options/1",
+      "option_id": "option7",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/2/object_id",
+          "target_id": "entry4",
+          "field": "object_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    },
+    {
+      "source_id": "P100153",
+      "version_hash": "4c55099ec961fdaec382692a0a69145bf60d44ddbd427cc6af092ff9034ce322",
+      "qualification_pointer": "/qualifications/1",
+      "option_pointer": "/qualifications/1/alternatives/options/1",
+      "option_id": "option2",
+      "encoding_status": "indeterminate_encoding",
+      "diagnostics": [
+        {
+          "reason": "mistyped_local_reference",
+          "pointer": "/relations/0/subject_id",
+          "target_id": "entry1",
+          "field": "subject_id"
+        }
+      ],
+      "scientific_elimination": false,
+      "default_selection": "held",
+      "evidence_retained": true
+    }
+  ]
+}

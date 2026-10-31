@@ -1,0 +1,2967 @@
+{
+  "$comment": "Active structural schema used by records.py. The legacy filename is retained for compatibility. Exact source, cross-reference, arithmetic, vocabulary and scientific checks are separately required. Structural validity is not scientific acceptance. Optional source-local documentary correspondence extension v1.0 (2026-10-23); no lexical identity, no implicit aggregation.",
+  "$defs": {
+    "action": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "not": {
+              "required": [
+                "native_label"
+              ]
+            }
+          },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "other"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "native_label"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "source_asserts_completed",
+            "stated",
+            "intended",
+            "owed",
+            "referenced",
+            "unspecified",
+            null
+          ]
+        },
+        "type": {
+          "enum": [
+            "receipt",
+            "issue",
+            "allocation",
+            "payment",
+            "loan",
+            "return",
+            "assessment",
+            "inventory",
+            "custody",
+            "obligation",
+            "discharge",
+            "document_requirement",
+            "reference",
+            "status",
+            "other",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "state",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "alternatives": {
+      "additionalProperties": false,
+      "properties": {
+        "exhaustive": {
+          "type": "boolean"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/option"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "exhaustive",
+        "options"
+      ],
+      "type": "object"
+    },
+    "assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+        "value": {
+          "$ref": "#/$defs/json_value"
+        }
+      },
+      "required": [
+        "target",
+        "value"
+      ],
+      "type": "object"
+    },
+    "coverage": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "complete"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gaps": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "partial"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gaps": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "gaps": {
+          "items": {
+            "$ref": "#/$defs/gap"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "gaps"
+      ],
+      "type": "object"
+    },
+    "date": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/date_calendar"
+        },
+        {
+          "$ref": "#/$defs/date_relative"
+        },
+        {
+          "$ref": "#/$defs/date_duration"
+        },
+        {
+          "$ref": "#/$defs/date_interval"
+        }
+      ]
+    },
+    "date_calendar": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "year_formula"
+          ]
+        },
+        {
+          "required": [
+            "year_number"
+          ]
+        },
+        {
+          "required": [
+            "month_name"
+          ]
+        },
+        {
+          "required": [
+            "month_number"
+          ]
+        },
+        {
+          "required": [
+            "day"
+          ]
+        }
+      ],
+      "properties": {
+        "day": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "calendar"
+        },
+        "month_name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "month_number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "occurrence": {
+          "$comment": "Source-local occurrence/iteration ordinal with exact evidence. It is not an amount, duration or year number. The author supplies the interpretation; absent means no ordinal asserted.",
+          "$ref": "#/$defs/ordinal_attribute"
+        },
+        "year_formula": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "year_number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "date_duration": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "duration"
+        },
+        "measurement_ref": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence",
+        "measurement_ref"
+      ],
+      "type": "object"
+    },
+    "date_interval": {
+      "additionalProperties": false,
+      "properties": {
+        "end_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "interval"
+        },
+        "start_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence",
+        "start_ref",
+        "end_ref"
+      ],
+      "type": "object"
+    },
+    "date_link": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "enum": [
+            "document_date",
+            "entry_date",
+            "service_period",
+            "due_date",
+            "duration",
+            "reference_date",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "ref",
+        "role",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "date_relative": {
+      "additionalProperties": false,
+      "properties": {
+        "base_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "relative"
+        },
+        "offset": {
+          "$ref": "#/$defs/offset"
+        },
+        "relation": {
+          "enum": [
+            "before",
+            "after",
+            "during",
+            "at_start",
+            "at_end"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence",
+        "base_ref",
+        "relation"
+      ],
+      "type": "object"
+    },
+    "document": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "const": 1
+              }
+            },
+            "required": [
+              "revision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "supersedes": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "minimum": 2
+              }
+            },
+            "required": [
+              "revision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "supersedes": {
+                "$ref": "#/$defs/record_ref"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "dates": {
+          "items": {
+            "$ref": "#/$defs/date"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "document_type": {
+          "enum": [
+            "receipt",
+            "expenditure",
+            "account",
+            "inventory",
+            "personnel_list",
+            "legal_record",
+            "letter",
+            "other",
+            null
+          ]
+        },
+        "edition": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "id": {
+          "const": "d1"
+        },
+        "important_uncertainty": {
+          "$ref": "#/$defs/id_list"
+        },
+        "parts": {
+          "items": {
+            "$ref": "#/$defs/part"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "purposes": {
+          "items": {
+            "$ref": "#/$defs/purpose"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "revision": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "schema": {
+          "const": "ur.source_record.v1"
+        },
+        "source_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "source_version": {
+          "$ref": "#/$defs/source_version"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/record_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "id",
+        "source_id",
+        "source_version",
+        "edition",
+        "revision",
+        "supersedes",
+        "document_type",
+        "parts",
+        "evidence",
+        "dates",
+        "purposes",
+        "coverage",
+        "important_uncertainty"
+      ],
+      "type": "object"
+    },
+    "entry": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "properties": {
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "calculation"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {}
+        },
+        {
+          "if": {
+            "required": [
+              "membership"
+            ]
+          },
+          "then": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "subtotal",
+                  "total",
+                  "balance",
+                  "calculation"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "group_members"
+            ]
+          },
+          "then": {
+            "properties": {
+              "kind": {
+                "const": "group"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/action"
+        },
+        "allocation_basis": {
+          "enum": [
+            "joint",
+            "per_member",
+            null
+          ]
+        },
+        "dates": {
+          "items": {
+            "$ref": "#/$defs/date_link"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/id_list"
+        },
+        "group_members": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/item"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "group",
+            "detail",
+            "subtotal",
+            "total",
+            "balance",
+            "calculation"
+          ]
+        },
+        "measurements": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/measurement"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "membership": {
+          "$ref": "#/$defs/membership"
+        },
+        "occurrence": {
+          "$comment": "Source-local occurrence/iteration ordinal with exact evidence. It is not an amount, duration or year number. The author supplies the interpretation; absent means no ordinal asserted.",
+          "$ref": "#/$defs/ordinal_attribute"
+        },
+        "part_id": {
+          "$ref": "#/$defs/id"
+        },
+        "participants": {
+          "items": {
+            "$ref": "#/$defs/participant"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "places": {
+          "items": {
+            "$ref": "#/$defs/place_link"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "purposes": {
+          "items": {
+            "$ref": "#/$defs/purpose_link"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "part_id",
+        "kind",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "spans": {
+          "items": {
+            "$ref": "#/$defs/span"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "spans"
+      ],
+      "type": "object"
+    },
+    "evidence_refs": {
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "expression": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "rule": {
+          "enum": [
+            "native_vector",
+            "entity_count",
+            "unresolved"
+          ]
+        },
+        "terms": {
+          "items": {
+            "$ref": "#/$defs/term"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "rule",
+        "terms"
+      ],
+      "type": "object"
+    },
+    "gap": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reason": {
+          "enum": [
+            "unprocessed",
+            "not_modeled"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "evidence",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "id": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "type": "string"
+    },
+    "id_list": {
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "minItems": 0,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "item": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "$ref": "#/$defs/item_attributes"
+        },
+        "designation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/evidence_refs"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_term_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/native_term_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type_id": {
+          "enum": [
+            "barley",
+            "sheep",
+            "lamb",
+            "goat",
+            "ox",
+            "donkey",
+            "sheep_skin",
+            "textile",
+            "wooden_object",
+            "beer",
+            "bread",
+            "oil",
+            "flour",
+            "silver",
+            "personnel",
+            "land",
+            "service",
+            "unclassified",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type_id",
+        "designation",
+        "native_term_id"
+      ],
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "designation": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "designation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "native_term_id": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "native_term_id": {
+                "$ref": "#/$defs/native_term_id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "item_attributes": {
+      "$comment": "Compact anchored attributes are keyed by fixed field names. Targets use item ID plus /attributes/<key>/value. Grade/age_class accept lexical atf: values or positive ordinal strings; a class ordinal is not an inferred number of age-years.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "age_class": {
+          "$ref": "#/$defs/ordinal_attribute"
+        },
+        "grade": {
+          "$ref": "#/$defs/ordinal_attribute"
+        },
+        "material": {
+          "$ref": "#/$defs/lexical_attribute"
+        },
+        "quality": {
+          "$ref": "#/$defs/lexical_attribute"
+        },
+        "sex": {
+          "$ref": "#/$defs/lexical_attribute"
+        },
+        "species": {
+          "$ref": "#/$defs/lexical_attribute"
+        },
+        "status": {
+          "$ref": "#/$defs/lexical_attribute"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "json_value": {
+      "$comment": "Candidate is checked against its actual target field type by the cross-reference validator; JSON Schema alone cannot resolve the record_id/field pair.",
+      "anyOf": [
+        {
+          "type": [
+            "null",
+            "boolean",
+            "string",
+            "integer"
+          ]
+        },
+        {
+          "items": {
+            "$ref": "#/$defs/json_value"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/json_value"
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "lexical_attribute": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/native_term_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "lexical_code": {
+      "$comment": "Interpreted code must resolve in the exact versioned semantic/unit/standard vocabulary. Pattern validation alone cannot authorize a new meaning. The registry dependency must be fixed before live adoption.",
+      "pattern": "^[a-z][a-z0-9_'-]*$",
+      "type": "string"
+    },
+    "line_range": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "start": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "measurement": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "properties": {
+              "adopted": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/quantity"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "function": {
+                "const": "rate"
+              }
+            },
+            "required": [
+              "function"
+            ]
+          },
+          "then": {
+            "properties": {
+              "adopted": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/rate"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "adopted": {
+                "type": "object"
+              },
+              "expression": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "expression",
+              "adopted"
+            ]
+          },
+          "then": {
+            "required": [
+              "derivation"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "geometric_axis"
+            ],
+            "properties": {
+              "geometric_axis": {
+                "type": "string"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "function": {
+                "const": "amount"
+              },
+              "adopted": {
+                "properties": {
+                  "dimension": {
+                    "enum": [
+                      "length",
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "adopted": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/quantity"
+            },
+            {
+              "$ref": "#/$defs/rate"
+            }
+          ]
+        },
+        "derivation": {
+          "$ref": "#/$defs/recipe"
+        },
+        "evidence": {
+          "$ref": "#/$defs/id_list"
+        },
+        "expression": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/expression"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "function": {
+          "enum": [
+            "amount",
+            "rate",
+            "duration",
+            "relative_work",
+            null
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "subject_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "geometric_axis": {
+          "enum": [
+            "length",
+            "breadth",
+            "height",
+            "depth",
+            null
+          ],
+          "description": "Optional source-supported geometric role; function remains amount and dimension remains length when established."
+        }
+      },
+      "required": [
+        "id",
+        "subject_ref",
+        "function",
+        "evidence",
+        "expression",
+        "adopted"
+      ],
+      "type": "object"
+    },
+    "membership": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "properties": {
+              "member_measurement_ids": {
+                "type": "array"
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "state": {
+                "const": "unresolved"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "member_measurement_ids": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "member_measurement_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "complete",
+            "partial",
+            "unresolved"
+          ]
+        },
+        "target_measurement_ref": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "target_measurement_ref",
+        "state",
+        "member_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "mention": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "person",
+            "unnamed_role_holder",
+            "collective",
+            "institution",
+            "place",
+            "deity",
+            null
+          ]
+        },
+        "literal": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "part_id": {
+          "$ref": "#/$defs/id"
+        },
+        "search_form": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "literal",
+        "search_form",
+        "part_id",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "native_standard": {
+      "$comment": "Exact written standard designation only. Does not assert metrological equivalence, a conversion factor or a link to an interpreted standard.",
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "native_term_id": {
+          "$ref": "#/$defs/native_term_id"
+        }
+      },
+      "required": [
+        "native_term_id",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "native_term_id": {
+      "$comment": "Generate from exact selected evidence-token pieces joined with ASCII space; UTF-8 percent encoding is canonical only after decode/re-encode equality. No semantic equivalence or arithmetic meaning follows.",
+      "pattern": "^atf:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+$",
+      "type": "string"
+    },
+    "nonnegative_rational": {
+      "pattern": "^(?:0|[1-9][0-9]*|[1-9][0-9]*/(?:[2-9]|[1-9][0-9]+))$",
+      "type": "string"
+    },
+    "offset": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "enum": [
+            "day",
+            "month",
+            "year"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/nonnegative_rational"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "type": "object"
+    },
+    "option": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "items": {
+            "$ref": "#/$defs/assignment"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "reasoning_ref": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "assignments"
+      ],
+      "type": "object"
+    },
+    "ordinal_attribute": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/native_term_id"
+            },
+            {
+              "$ref": "#/$defs/positive_integer_string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "part": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "tablet",
+            "envelope",
+            "seal",
+            "composite_seal_legend",
+            "block"
+          ]
+        },
+        "line_ranges": {
+          "items": {
+            "$ref": "#/$defs/line_range"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "parent_id",
+        "line_ranges"
+      ],
+      "type": "object"
+    },
+    "participant": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "not": {
+              "required": [
+                "native_label"
+              ]
+            }
+          },
+          "if": {
+            "properties": {
+              "role": {
+                "const": "unclassified"
+              }
+            },
+            "required": [
+              "role"
+            ]
+          },
+          "then": {
+            "required": [
+              "native_label"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "enum": [
+            "source",
+            "recipient",
+            "intermediary",
+            "supervisor",
+            "custodian",
+            "witness",
+            "beneficiary",
+            "document_party",
+            "referenced_document_party",
+            "associated_person",
+            "unclassified",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "ref",
+        "role",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "place_link": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "enum": [
+            "location",
+            "origin",
+            "destination",
+            "storage_location",
+            "reference_location",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "ref",
+        "role",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "positive_integer_string": {
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "purpose": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "remuneration",
+            "subsistence",
+            "travel_provision",
+            "animal_feed",
+            "production",
+            "construction",
+            "institutional_service",
+            "ritual_or_festival",
+            "debt_or_obligation",
+            "other",
+            null
+          ]
+        },
+        "entity_refs": {
+          "$ref": "#/$defs/id_list"
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_term": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "native_term",
+        "entity_refs",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "purpose_link": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "role": {
+          "enum": [
+            "purpose",
+            null
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "ref",
+        "role",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "qualification": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "$ref": "#/$defs/alternatives"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "impact": {
+          "items": {
+            "enum": [
+              "meaning",
+              "evidence_dependence",
+              "permitted_use"
+            ]
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "null_reason": {
+          "enum": [
+            "not_written",
+            "unreadable",
+            "unresolved"
+          ]
+        },
+        "reading_marks": {
+          "items": {
+            "$ref": "#/$defs/reading_mark"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "reasoning_ref": {
+          "$ref": "#/$defs/id"
+        },
+        "support": {
+          "enum": [
+            "well_supported",
+            "ambiguous",
+            "unresolved"
+          ]
+        },
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/target"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "targets",
+        "support",
+        "impact",
+        "reasoning_ref"
+      ],
+      "type": "object"
+    },
+    "quantity": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "native_standard"
+            ]
+          },
+          "then": {
+            "properties": {
+              "standard_ref": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "components": {
+          "additionalProperties": {
+            "$ref": "#/$defs/rational"
+          },
+          "minProperties": 1,
+          "propertyNames": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/lexical_code"
+              },
+              {
+                "$ref": "#/$defs/native_term_id"
+              }
+            ]
+          },
+          "type": "object"
+        },
+        "dimension": {
+          "enum": [
+            "count",
+            "capacity",
+            "mass",
+            "length",
+            "area",
+            "volume",
+            "time",
+            "relative_work",
+            "ratio",
+            null
+          ]
+        },
+        "native_standard": {
+          "$ref": "#/$defs/native_standard"
+        },
+        "standard_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lexical_code"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit_evidence": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/native_term_id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/evidence_refs"
+          }
+        }
+      },
+      "required": [
+        "dimension",
+        "components",
+        "standard_ref"
+      ],
+      "type": "object"
+    },
+    "rate": {
+      "additionalProperties": false,
+      "properties": {
+        "denominator": {
+          "$ref": "#/$defs/quantity"
+        },
+        "numerator": {
+          "$ref": "#/$defs/quantity"
+        },
+        "population_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_basis_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator",
+        "population_ref"
+      ],
+      "type": "object"
+    },
+    "rational": {
+      "$comment": "Fraction reduction/gcd=1 requires a separate exact arithmetic check.",
+      "pattern": "^(?:0|-?[1-9][0-9]*|-?[1-9][0-9]*/(?:[2-9]|[1-9][0-9]+))$",
+      "type": "string"
+    },
+    "reading_mark": {
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "enum": [
+            "damaged",
+            "restored",
+            "queried",
+            "unreadable",
+            "editorial_correction",
+            "editorial_deletion"
+          ]
+        },
+        "evidence_ref": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "evidence_ref",
+        "condition"
+      ],
+      "type": "object"
+    },
+    "reasoning": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_refs": {
+          "$ref": "#/$defs/id_list"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "premise_refs": {
+          "$ref": "#/$defs/id_list"
+        },
+        "supporting_evidence_refs": {
+          "$ref": "#/$defs/id_list"
+        },
+        "text": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "evidence_refs",
+        "premise_refs",
+        "text"
+      ],
+      "type": "object"
+    },
+    "recipe": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/recipe_sum_members"
+        },
+        {
+          "$ref": "#/$defs/recipe_copy"
+        },
+        {
+          "$ref": "#/$defs/recipe_add"
+        },
+        {
+          "$ref": "#/$defs/recipe_subtract"
+        },
+        {
+          "$ref": "#/$defs/recipe_multiply"
+        },
+        {
+          "$ref": "#/$defs/recipe_divide"
+        }
+      ]
+    },
+    "recipe_add": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_measurement_ids": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "add"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "input_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "recipe_copy": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_measurement_ids": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "copy"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "input_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "recipe_divide": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_measurement_ids": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "divide"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "input_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "recipe_multiply": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_measurement_ids": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "multiply"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "input_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "recipe_subtract": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "input_measurement_ids": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "subtract"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "input_measurement_ids"
+      ],
+      "type": "object"
+    },
+    "recipe_sum_members": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "membership_id": {
+          "$ref": "#/$defs/id"
+        },
+        "mode": {
+          "enum": [
+            "calculate",
+            "reconstruct"
+          ]
+        },
+        "operation": {
+          "const": "sum_members"
+        },
+        "standard_ref": {
+          "$ref": "#/$defs/lexical_code"
+        }
+      },
+      "required": [
+        "id",
+        "mode",
+        "operation",
+        "membership_id"
+      ],
+      "type": "object"
+    },
+    "record_ref": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "revision": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "revision",
+        "sha256",
+        "bytes"
+      ],
+      "type": "object"
+    },
+    "relation": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relation_binary"
+        },
+        {
+          "$ref": "#/$defs/relation_title"
+        },
+        {
+          "$ref": "#/$defs/relation_person_status"
+        },
+        {
+          "$ref": "#/$defs/relation_coreference"
+        },
+        {
+          "$ref": "#/$defs/relation_unclassified_binary"
+        },
+        {
+          "$ref": "#/$defs/relation_unclassified_attribute"
+        },
+        {
+          "$ref": "#/$defs/relation_repeated"
+        },
+        {
+          "$ref": "#/$defs/relation_account_binary"
+        }
+      ]
+    },
+    "relation_account_binary": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "object_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "summarizes",
+            "discharges",
+            "balance_of"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "object_id"
+      ],
+      "type": "object"
+    },
+    "relation_binary": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "object_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "child_of",
+            "spouse_of",
+            "sibling_of",
+            "affiliation",
+            "on_behalf_of",
+            "nominal_association",
+            "seal_owner"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "object_id"
+      ],
+      "type": "object"
+    },
+    "relation_coreference": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "members": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "minItems": 2,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "type": {
+          "enum": [
+            "local_coreference"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "members"
+      ],
+      "type": "object"
+    },
+    "relation_person_status": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "person_status"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/status_value"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "value"
+      ],
+      "type": "object"
+    },
+    "relation_repeated": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "members": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "minItems": 2,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "repeated_representation"
+          ]
+        },
+        "documentary_correspondence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scope",
+            "item_pairs",
+            "context_relation_refs"
+          ],
+          "properties": {
+            "scope": {
+              "const": "source_local_tablet_envelope"
+            },
+            "item_pairs": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "left_item_id",
+                  "right_item_id"
+                ],
+                "properties": {
+                  "left_item_id": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "right_item_id": {
+                    "$ref": "#/$defs/id"
+                  }
+                }
+              }
+            },
+            "context_relation_refs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "members"
+      ],
+      "type": "object"
+    },
+    "relation_title": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "title"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/title_value"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "value"
+      ],
+      "type": "object"
+    },
+    "relation_unclassified_attribute": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "unclassified"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/unclassified_relation_value"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "value",
+        "native_label"
+      ],
+      "type": "object"
+    },
+    "relation_unclassified_binary": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "native_label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope_refs": {
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "subject_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "enum": [
+            "unclassified"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "evidence",
+        "subject_id",
+        "object_id",
+        "native_label"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_version": {
+      "additionalProperties": false,
+      "properties": {
+        "bytes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "encoding": {
+          "const": "utf-8"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "sha256",
+        "bytes",
+        "encoding"
+      ],
+      "type": "object"
+    },
+    "span": {
+      "additionalProperties": false,
+      "dependentRequired": {
+        "character_end": [
+          "character_start"
+        ],
+        "character_start": [
+          "character_end"
+        ]
+      },
+      "properties": {
+        "character_end": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "character_start": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "line": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "token_end": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "token_start": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "line",
+        "token_start",
+        "token_end"
+      ],
+      "type": "object"
+    },
+    "status_value": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "deceased",
+            "absent",
+            "escaped",
+            "unclassified",
+            null
+          ]
+        },
+        "native_term": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "native_term"
+      ],
+      "type": "object"
+    },
+    "supporting_source": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_id": {
+          "pattern": "^P[0-9]{6}$",
+          "type": "string"
+        },
+        "source_version": {
+          "$ref": "#/$defs/source_version"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "source_version",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "$comment": "Pointer must resolve through object fields only; no array traversal or immutable/raw replacement targets. Check against actual referenced record.",
+          "pattern": "^/(?:[^~/]|~[01])+(?:/(?:[^~/]|~[01])+)*$",
+          "type": "string"
+        },
+        "record_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "record_id",
+        "field"
+      ],
+      "type": "object"
+    },
+    "term": {
+      "additionalProperties": false,
+      "properties": {
+        "deleted": {
+          "const": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "number": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/rational"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "op": {
+          "enum": [
+            "add",
+            "subtract",
+            null
+          ]
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lexical_code"
+            },
+            {
+              "$ref": "#/$defs/native_term_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit_evidence": {
+          "$ref": "#/$defs/evidence_refs"
+        }
+      },
+      "required": [
+        "id",
+        "op",
+        "number",
+        "unit",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "title_value": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "scribe",
+            "governor",
+            "administrator",
+            "overseer",
+            "farmer",
+            "gudu_priest",
+            "cupbearer",
+            "messenger",
+            "leatherworker",
+            "cook",
+            "chief_surveyor",
+            "unclassified",
+            null
+          ]
+        },
+        "native_term": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "native_term"
+      ],
+      "type": "object"
+    },
+    "unclassified_relation_value": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lexical_code"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "native_term": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "native_term"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "document": {
+      "$ref": "#/$defs/document"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/entry"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "mentions": {
+      "items": {
+        "$ref": "#/$defs/mention"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "qualifications": {
+      "items": {
+        "$ref": "#/$defs/qualification"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "reasoning": {
+      "items": {
+        "$ref": "#/$defs/reasoning"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/relation"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "supporting_sources": {
+      "items": {
+        "$ref": "#/$defs/supporting_source"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "document",
+    "mentions",
+    "relations",
+    "entries",
+    "qualifications",
+    "reasoning"
+  ],
+  "title": "Canonical Girsu source record V1 — active structural schema",
+  "type": "object",
+  "x-design-source-bindings": [
+    {
+      "file": "ACCOUNT_VALUE_CONVENTIONS_V1.md",
+      "sha256": "2b04ff0d6eacfa18d30e44af59a9b96a80f39691dc0274015d55b231807e05de"
+    },
+    {
+      "file": "CORE_REFERENCE_CONVENTIONS_V1.md",
+      "sha256": "dd69bec8c1fceb4e62a65bb9b1bb8678e709aa5d18bb8b3f85feb787d1a49c87"
+    },
+    {
+      "file": "IDENTITY_CONVENTIONS_V1.md",
+      "sha256": "220a4c396c6ea7ffddb862a4497e5ee3e17d13a82899f5a2f6a6d2bc9ae1ebae"
+    },
+    {
+      "file": "LEXICAL_TERM_CONVENTIONS_V1.md",
+      "sha256": "8725203675becc9991bbbb7046ff932b52d2417e0d7d0ac7dfe8047583bf370f"
+    },
+    {
+      "file": "QUALIFICATION_REVIEW_CONVENTIONS_V1.md",
+      "sha256": "b17712acedcb41ce0d04924427c6cb8b41ab376e01da9ea7668ffd1a5f3f43c9"
+    },
+    {
+      "file": "TEMPORAL_PURPOSE_CONVENTIONS_V1.md",
+      "sha256": "85b29d9ca0e957c83e615a6694d7cf65baf37d087650b3a3a22319f2079fc4ce"
+    },
+    {
+      "file": "DOCUMENT_ENTRY_CODES_V1.md",
+      "sha256": "58d267929df79ad4ed535b673e8f86e749606515fc7f00c81df01ad76f59cecf"
+    }
+  ]
+}

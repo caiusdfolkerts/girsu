@@ -1,10 +1,17 @@
 # Reconstructing Ur III
 
-The Ur III state that governed Mesopotamia from 2112-2004 BCE was one of the most beaurocratic states of human history.  
+The Ur III sumerian administration that governed southern Mesopotamia from 2112-2004 BCE was one of the most beaurocratic states of human history. Over 108 years and across 23 core provinces, archeology has recovered 120,000 Ur III administrative tablets and related documents. 
 
-The achievement is document-level understanding represented as data. Girsu records who is involved, what is being counted or transferred, how entries relate, which totals include which details, and what supports each interpretation. Researchers can search the collection, assemble dossiers and analyse these relationships computationally, then follow a result back to the exact passage and reasoning behind it.
+The majority (~77% of BDTNS) of these texts come from three archeological sites: Girsu (Tello, Iraq), Umma (Tell Jokha, Iraq) and Puzriš-Dagān (Drehem, Iraq). Ur III was first discovered in 1853 by John George Taylor, who investigated Tell el-Muqayyar and uncovered the first Ur transcriptions. Arguably (and geographically) the centre of the Ur III administration, and the first to be discovered is Girsu, where Ernest de Sarvec discovered 30,000 administrative tablets in 1894. 
 
-That changes the starting point for historical research. The work of interpreting a source becomes a reusable resource across investigations, rather than something that has to be rebuilt for each new question. This repository is the product of that method.
+Historians have been studying trying to reconstruct the economic and administrative practices of Ur III by studying administrative tablets since de Sarvec's first discovery. Tablets are distributed accross museums and private collections, with many at the British Museum and the Louvre, and are written in cuneiform. Thanks to the tremendous research effort of thousands of assyriologists over the last century and a half, the majority of Ur III administrative records have been transcribed. Since 2013, they have been digitised and collected by the BDTNS project. 
+
+Individual tablets 
+But to do research and learn about Ur III, the problem is to intepret these sources, There are only a few hundred researchers alive today who can interpret individual sources and thus do productive research on BDTNS.
+
+To do this requires training in cuneiform, and experience with the texts. Using AI (a mixture of gpt-5.6 sol, gpt-6.1 sol and gpt-6 astra were used) this project uses AI to interpret all 19,000 Drehem texts, and put them into a canonical format, describing participants, their relationships. This opens the doors to a whole new category of assyriology research, where we can now work over these structured intepretation documents and the relationships between them quickly and efficiently, rather than spending years reconstructing individual source texts.
+
+We are expanding this method; this project will soon contain canonical records for all non-ATF sources across BDTNS. I am currently expanding source coverage to include Puzriš-Dagān, I plan to make the agent harness that was used in the development of this project open source so that anyone can make contributions as we expand progres. 
 
 ## The agentic pipeline
 

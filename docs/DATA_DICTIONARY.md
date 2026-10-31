@@ -1,332 +1,231 @@
 # Data dictionary
 
-This repository represents the original Girsu **source graph** through one materialized default, with exact canonical/original evidence separately preserved. The normative source-record model is `ur.source_record.v1`; the default is a projection of it, not a second competing consumer reading. A field described below is a source-schema capability, not a promise that every source populates it. All content inventories explicitly measure preserved canonical evidence, not the number of nonnull fields in the default.
+The source-record model is `ur.source_record.v1`. Ordinary access returns one materialized default derived from that model; the unchanged canonical records and original texts remain available as evidence. The default is not a second source record or a competing interpretation presented alongside the first.
 
-See [README](../README.md) for access, [semantics](SEMANTICS.md) for interpretation and worked examples, and [provenance](PROVENANCE.md) for exact release bindings and denominators.
+This reference describes what the schema can represent, not what every source contains. Unless stated otherwise, content counts refer to preserved canonical evidence, before default decisions hold any fields null.
 
-## 1. Exported populations and envelopes
+See the [README](../README.md) for access, [semantics](SEMANTICS.md) for interpretation and worked examples, and [provenance](PROVENANCE.md) for release bindings and counting populations.
 
-The data directories use gzip-compressed UTF-8 JSON Lines. A JSONL row is one independent JSON value; compression partitions are transport boundaries, not historical archives. Consult each dataset's manifest/index rather than assuming the same partition or line identifies the same source in another dataset.
+## Files and exported populations
 
-### Ordinary default envelope — `data/default_records/`
+The data directories contain gzip-compressed UTF-8 JSON Lines. Each row is an independent JSON value. Compression partitions are transport boundaries, not historical archives. Use each dataset's manifest or index to locate a source; a partition number or row position in one dataset does not identify the corresponding source in another.
 
-The source index selects a gzip partition and zero-based row. One row binds one source/version and contains `schema`, `source_id`, `version_hash`, `original_hash`, `default_record_sha256`, `record`, `branches`, `diagnostics`, `coverage`, `research_population`, current status and associated context. There are 18,409 current defaults and three explicitly archival defaults; ordinary access excludes the archival three.
+### Default records
 
-`record` is the one consumer reading, including held-null fields. `version_hash` identifies the original immutable canonical payload; `default_record_sha256` identifies the compact sorted-key UTF-8 serialization of the default record. They are different bindings and must not be interchanged. The index policy fingerprint must match the portable reader; partition hashes, source/version and original-witness bindings are checked before access.
+`data/default_records/` contains 18,409 current defaults and three explicitly archival defaults. Ordinary access excludes the archival three. The source index locates each row by gzip partition and zero-based row number.
 
-| Default-envelope field | Meaning |
-|---|---|
-| `schema` | `ur.default_record.v1` for the materialized row. |
-| `source_id`, `version_hash`, `original_hash` | Documentary source, exact canonical-byte version and exact bound original witness. |
-| `record_canonical_json_sha256` | Digest of the parsed source object under compact sorted-key JSON serialization; not a substitute for the original raw-byte `version_hash`. |
-| `default_record_sha256` | Digest under that serialization contract of the one default `record`. |
-| `record` | Default structured document, including applicable nulls and branch-evidence pointers. |
-| `branches`, flags and annotations | Identified choice/context metadata; interpreted with the flag contract below, not a confidence score. |
-| `diagnostics` | Conflicts, affected recipe recomputation/withholding and other explicit default-processing dispositions. |
-| `coverage` | Bounded default-policy coverage, distinct from the source extraction scope in `record.document.coverage`. |
-| `current`, `research_population` | Exact current selection versus explicit archival inclusion. |
-| `canonical_mutated`, `scientific_review_credit` | False and zero respectively; defaulting does not rewrite or independently review the source. |
-| `identity_scope`, `evidence_accessor`, `layer` | Source-local scope, advanced evidence navigation and explicit default value layer. |
+Each row has schema `ur.default_record.v1`. Its `source_id` identifies the documentary source, `version_hash` binds the exact original canonical bytes, and `original_hash` binds the original-text witness. The `record` field contains the default structured document, including held-null fields and branch-evidence pointers.
 
-`Graph.research_value(source_id,pointer)` returns `value`, `json_pointer`, source/version/original binding, applicable qualifications, labelled `branches` annotations, `has_branches`, `has_ambiguity`, counts, diagnostics and coverage. Metadata carries targets, selected/held status, null cause, dependencies and evidence/option pointers and hashes where applicable. It does not provide another default value. `Graph.research` uses `record` instead of `value` for the whole document. `iter_records` streams detached default envelopes with source-level context; it does not calculate field-applicable qualification lists.
+Two further hashes describe parsed JSON under compact, sorted-key UTF-8 serialization. `record_canonical_json_sha256` hashes the parsed source object; it does not replace the raw-byte `version_hash`. `default_record_sha256` hashes the default `record`. These bindings are not interchangeable. Before access, the reader checks partition hashes, source/version and original-witness bindings, and that the index policy fingerprint matches the portable reader.
 
-Each preserved `branches[]` annotation has `is_identified_branch` and `annotation_kind` (`branch` or `qualification`). `identified_branch_count` counts only the former; `qualification_annotation_count` counts the latter. `has_branches` means identified count >0. `has_ambiguity` means the scope has any preserved annotation or an applicable qualification marked ambiguous/unresolved. Field access recalculates these over overlapping targets. Neither flag is a probability or complete prose-analysis certificate. The bounded policy's `machine_reason_not_established` is distinct from source-level ambiguity or absence. See [semantics](SEMANTICS.md).
+`branches`, flags and annotations describe choices and their context. `diagnostics` records conflicts, affected recipe recomputation or withholding, and other processing dispositions. `coverage` describes the bounded default policy, not the source extraction coverage in `record.document.coverage`. `current` and `research_population` distinguish current selection from explicit archival inclusion.
 
-For an actual source field beneath a held-null default ancestor, the annotated accessor returns null with `value_status='null_due_to_unresolved_ancestor'` and `ancestor_pointer`, retaining applicable context. A misspelled/nonexistent source field still fails. `pointer` remains strict traversal; do not confuse that traversal failure with missing source evidence.
+The remaining metadata makes the layer and its limits explicit. `identity_scope` records source-local scope, `evidence_accessor` identifies advanced evidence navigation, and `layer` identifies the default value layer. `canonical_mutated` is false and `scientific_review_credit` is zero: defaulting neither rewrites the source nor constitutes an independent scientific review.
 
-### Advanced canonical evidence envelope — `data/records/`
+`Graph.research_value(source_id, pointer)` returns one `value`, its `json_pointer`, source/version/original binding, applicable qualifications, labelled `branches` annotations, counts, flags, diagnostics and coverage. Where applicable, the metadata includes targets, selected or held status, null cause, dependencies, evidence and option pointers, and hashes. It does not supply another default value. `Graph.research` returns the whole document under `record` rather than `value`. `iter_records` streams detached default envelopes with source-level context; it does not calculate field-specific qualification lists.
 
-| Field | Meaning |
-|---|---|
-| `record_no` | Integer key in the source snapshot; an index key, not an ancient identifier. |
-| `source_id` | Documentary/catalogue ID, for example `P100144`. |
-| `version_hash` | SHA-256 of the **exact UTF-8 bytes** in `record_json`. |
-| `record_json` | A JSON **string** containing the unchanged canonical evidence. Advanced `evidence_record_bytes` preserves its exact UTF-8 bytes; `evidence_record` parses it. Ordinary `record` returns the single default instead. |
-| `original_hash` | Exact original-text witness binding. The canonical `document.source_version` also supplies its SHA and byte length. |
-| `current` | Whether this selected payload equals the source registry's exact current version pointer. |
-| `origin` | Retained origin of the selected scientific payload. |
-| `gp_binding` | Retained scientific-admission binding where applicable; not another independent canonical record. |
+The `branches` collection includes both identified branches and qualification-only annotations. Each annotation has `is_identified_branch` and `annotation_kind`, whose value is `branch` or `qualification`. `identified_branch_count` counts branches; `qualification_annotation_count` counts qualification annotations. `has_branches` means that the identified count is greater than zero. `has_ambiguity` means that the scope contains a preserved annotation or an applicable qualification marked ambiguous or unresolved. Field access recalculates these over overlapping targets. Neither flag is a probability or a claim of complete prose analysis. In particular, the policy's `machine_reason_not_established` is distinct from a source stating uncertainty or supplying no interpretation.
 
-There are **18,412** stored selected records: **18,409 current** and **3 archival-only**. `source_id` is unique in this selected population; this is not an inventory of every historical revision. Archival-only sources are `P110939`, `P111261`, `P111282`, all letters.
+For an actual source field beneath an ancestor held null in the default, the annotated accessor returns null with `value_status='null_due_to_unresolved_ancestor'` and `ancestor_pointer`, while retaining applicable context. A misspelled or nonexistent source field still fails. `pointer` uses strict traversal, so a traversal error beneath null is not evidence that the source field was absent.
 
-### Source envelope — `data/sources/`
+### Canonical evidence
 
-`source_id`, `current_version_hash`, `canonical_state`, `coverage_status` and `ledger` retain the documentary registry and a scientific provenance projection. Source presence, current-payload presence, acceptance, coverage and retained audit/hold disposition are distinct dimensions. The ledger is not a new historical assertion layer.
+`data/records/` holds 18,412 selected records: 18,409 current and three archival-only. `source_id` is unique within this population. It is a selection of records, not an inventory of every historical revision. The archival-only sources are `P110939`, `P111261` and `P111282`, all letters.
 
-### Original envelope — `data/originals/`
+`record_no` is an integer key in the source snapshot, not an ancient identifier. `source_id` is the documentary or catalogue identifier, such as `P100144`. `record_json` is a JSON string containing the unchanged canonical evidence, and `version_hash` is the SHA-256 of that string's exact UTF-8 bytes. Advanced `evidence_record_bytes` returns those bytes; `evidence_record` parses them. Ordinary `record` returns the default instead.
 
-`source_id`, `kind`, `sha256`, `original_bytes_b64` preserve exact original bytes. Decode base64, verify SHA-256, then decode UTF-8 to inspect text. There are **38,046 stored witness rows** for **19,208 sources**: 19,208 `registered`, 18,835 `canonical`, and 3 `historical_local_archival_acceptance`. These are not 38,046 distinct texts: 17,969 registered/canonical pairs are byte-identical. Use the witness matching the record's `source_version.sha256` when resolving evidence spans; the default registered witness is not always that binding.
+`original_hash` binds the original-text witness. The canonical `document.source_version` also records its SHA and byte length. `current` says whether the selected payload equals the registry's exact current-version pointer. `origin` retains the selected scientific payload's origin, and `gp_binding` retains its scientific-admission binding where applicable; neither adds another canonical record.
 
-### Catalogue envelope — `data/catalogue/`
+### Registry, originals and catalogue
 
-`source_id` and `metadata` preserve the **11,048 catalogue-only/no-ATF** documentary appendix. The full documentary universe is **30,256 IDs** when these are combined with the 19,208 ATF-present registry sources in `data/sources/`. Catalogue-provenience and period labels are not place mentions or adjudicated event dates. No-ATF means no saved ATF text in this documentary appendix; it does not mean a blank canonical record exists.
+`data/sources/` retains the documentary registry and a scientific provenance projection through `source_id`, `current_version_hash`, `canonical_state`, `coverage_status` and `ledger`. Source presence, current-payload presence, acceptance, coverage, and retained audit or hold disposition are separate properties. The ledger does not add historical assertions.
 
-`data/availability/`, `data/aliases/` and `data/admission/` retain documentary availability, explicit documentary alias/disposition and scientific-admission provenance separately. They must not be added to canonical-record counts.
+`data/originals/` stores `source_id`, `kind`, `sha256` and `original_bytes_b64`. To inspect a witness, decode the base64, verify SHA-256, then decode UTF-8. There are 38,046 witness rows for 19,208 sources: 19,208 `registered`, 18,835 `canonical` and three `historical_local_archival_acceptance`. These are not 38,046 distinct texts: 17,969 registered/canonical pairs have identical bytes. Resolve evidence spans against the witness matching the record's `source_version.sha256`; the registered witness is not always that witness.
 
-## 2. Canonical record conventions
+`data/catalogue/` contains `source_id` and `metadata` for 11,048 catalogue-only/no-ATF sources. Together with the 19,208 ATF-present registry sources, these make a documentary universe of 30,256 IDs. Catalogue-provenience and period labels are not place mentions or adjudicated event dates. Here, no-ATF means that the documentary appendix has no saved ATF text; it does not imply that a blank canonical record exists.
 
-The following field dictionary describes the preserved source model. Default fields retain its meanings, but a held branch can replace a target with null and alternative payloads are replaced by `branch_evidence` pointers. Do not validate a default projection as though it were the unchanged canonical artifact or hash it against the original version hash. Source-schema requirements and current default-population measurements are different contracts.
+`data/availability/`, `data/aliases/` and `data/admission/` separately retain documentary availability, explicit documentary aliases and dispositions, and scientific-admission provenance. Their rows must not be added to canonical-record counts.
 
-The root has six required sections: `document`, `entries`, `mentions`, `relations`, `qualifications`, `reasoning`. The optional seventh section is `supporting_sources`.
+## Record structure and addressing
 
-* IDs are local to the enclosing record. The same literal `m1` in two sources identifies two different stored objects.
-* An ID-bearing object's identifier is unique throughout that record, including candidate and supporting-context objects.
-* Stable external addressing requires the immutable `version_hash` plus local ID or exact JSON pointer.
-* Missing optional key, explicit `null`, empty array and an empty string are not interchangeable.
-* Required nullable fields remain present. A material withheld interpretation has a scoped qualification; structural inapplicability is distinguished by the validator.
-* Exact rational numbers are strings, such as `"4"`, `"1/3"`, `"-2"`. They are reduced; no floating-point/decimal approximation is implied.
-* Unknown structural keys are rejected by the canonical schema. An `other` or `unclassified` code retains native content rather than permitting arbitrary new structure.
+The root has six required sections: `document`, `entries`, `mentions`, `relations`, `qualifications` and `reasoning`. `supporting_sources` is optional.
 
-## 3. Document envelope
+IDs are local to the enclosing record. The literal `m1` in two different sources identifies two different stored objects. Within a record, every ID-bearing object's identifier is unique, including those in candidate and supporting-context objects. Stable external addressing requires the immutable `version_hash` and a local ID or exact JSON pointer.
 
-| Field | Contract and interpretation |
-|---|---|
-| `schema` | Required literal `ur.source_record.v1`. |
-| `id` | Required local document ID `d1`. |
-| `source_id` | Required documentary ID. |
-| `source_version` | Required `{sha256, bytes, encoding}` binding to the entire original; encoding is `utf-8`. |
-| `edition` | Required string or null; a source designation, not a global identity key. |
-| `revision` | Required integer ≥1. |
-| `supersedes` | Required exact predecessor `{source_id, revision, sha256, bytes}` or null. Revision 1 has null. A predecessor reference does not require every earlier payload to occur in this selected export. |
-| `document_type` | Required genre code or qualified null. Actual current values are listed below. |
-| `parts` | Required documentary/physical part objects. |
-| `evidence` | Required interned exact evidence anchors. |
-| `dates` | Required temporal-object collection. |
-| `purposes` | Required purpose-object collection. |
-| `coverage` | Required extraction coverage object. |
-| `important_uncertainty` | Required sorted unique qualification-ID index of material ambiguous/unresolved content. It is a navigation index, not a probability score. |
+A missing optional key, explicit null, empty array and empty string are different representations. Required nullable fields remain present. Materially withheld interpretations have scoped qualifications; the validator distinguishes them from structural inapplicability. A default decision may hold a target null, but its alternatives remain in the evidence layer rather than becoming additional ordinary values.
 
-Genres in the preserved current canonical evidence:
+Numbers are reduced exact rational strings, for example `"4"`, `"1/3"` or `"-2"`, not floating-point approximations. The canonical schema rejects unknown structural keys. Codes such as `other` and `unclassified` preserve native content within the schema; they do not permit arbitrary structure.
 
-| Genre | Records |
-|---|---:|
-| `account` | 8,979 |
-| `receipt` | 3,494 |
-| `other` | 2,434 |
-| null | 1,301 |
-| `expenditure` | 1,090 |
-| `personnel_list` | 325 |
-| `legal_record` | 321 |
-| `letter` | 233 |
-| `inventory` | 232 |
+## The document object
 
-`other` and null-genre records can contain extensive positive historical content. There is no separate royal genre code; royal material appears in seal legends, titulary, affiliations, date formulae, standards and body assertions.
+Every document has `schema: "ur.source_record.v1"`, local `id: "d1"` and a documentary `source_id`. `source_version` is the required `{sha256, bytes, encoding}` binding to the entire original text, with encoding `utf-8`.
 
-## 4. Parts, coverage and evidence
+`edition` is a required string or null. It designates a source, not a global identity. `revision` is an integer of at least one. `supersedes` is either the exact predecessor binding `{source_id, revision, sha256, bytes}` or null; revision 1 has null. A predecessor reference does not imply that the selected export contains every earlier payload.
+
+`document_type` is a required genre code or qualified null. The required collections are `parts`, `evidence`, `dates` and `purposes`; the document also requires an extraction `coverage` object. `important_uncertainty` is a sorted, unique index of qualification IDs for material ambiguous or unresolved content. It helps locate that content; it is not a probability score.
+
+In current canonical evidence, genres are `account` in 8,979 records, `receipt` in 3,494, `other` in 2,434, null in 1,301, `expenditure` in 1,090, `personnel_list` in 325, `legal_record` in 321, `letter` in 233 and `inventory` in 232. Records with `other` or null genre can still contain substantial historical information. There is no separate royal genre code: royal material occurs in seal legends, titulary, affiliations, date formulae, standards and body assertions.
 
 ### Parts
 
-`{id, kind, parent_id, line_ranges}`. Actual kinds are `tablet`, `envelope`, `seal`, `composite_seal_legend`, `block`. `parent_id` is a part ID or null; part parentage is acyclic. `line_ranges` consists of `{start,end}` physical-line intervals, start inclusive/end exclusive. A child's ranges fit within its parent's. One source can therefore contain multiple documentary witnesses; a source ID is not necessarily one physical tablet.
+A part has `{id, kind, parent_id, line_ranges}`. The observed kinds are `tablet`, `envelope`, `seal`, `composite_seal_legend` and `block`. `parent_id` is another part ID or null, and part parentage is acyclic.
 
-### Evidence
+Each `line_ranges` interval has `{start,end}` physical-line bounds, with start inclusive and end exclusive. A child's ranges fit inside its parent's. A source may contain several documentary witnesses; a source ID therefore does not necessarily correspond to one physical tablet.
 
-An evidence object is `{id, spans}` with one or more ordered, nonoverlapping spans. Each span has:
+### Evidence anchors
 
-| Field | Coordinates |
-|---|---|
-| `line` | One-based physical line of the **exact bound original**, including headers, directives, comments and blank lines. |
-| `token_start`, `token_end` | Zero-based token positions, end exclusive, after the defined printed line-prefix handling. |
-| `character_start`, `character_end` | Optional paired subtoken bounds; Unicode code-point positions within one raw token, end exclusive. Not byte offsets. |
+An evidence object has `{id, spans}`, with one or more ordered, nonoverlapping spans. `line` is the one-based physical line of the exact bound original, including headers, directives, comments and blank lines. `token_start` and `token_end` are zero-based, end-exclusive token positions after the defined printed line-prefix handling.
 
-Evidence references point to these interned IDs. An anchor can support several assertions, and an assertion can cite several anchors. Evidence occurrence counts are neither distinct ancient facts nor independent observations.
+Optional `character_start` and `character_end` occur as a pair. They are zero-based, end-exclusive Unicode-code-point positions within one raw token, not byte offsets.
 
-### Coverage
+Evidence references point to these interned IDs. Several assertions may cite one anchor, and one assertion may cite several anchors. Counting citations does not count distinct ancient facts or independent observations.
 
-`coverage` has `status` (`complete` or `partial`) and `gaps`. Complete requires no gaps; partial requires at least one. A gap has `{id,evidence,reason}` with reason `unprocessed` or `not_modeled`. Current records declare complete in 18,322 cases and partial in 87. Complete extraction does not mean the ancient text is intact or every interpretation is certain.
+### Extraction coverage
 
-## 5. Entries, actions and applicability links
+`coverage` has `status` and `gaps`. Status `complete` requires no gaps; `partial` requires at least one. Each gap has `{id,evidence,reason}`, with reason `unprocessed` or `not_modeled`.
 
-An entry has required `id`, `part_id`, `kind`, `evidence`. It is a source-local semantic unit, **not automatically a transaction**. Actual entry kinds are `detail`, `group`, `subtotal`, `total`, `balance`, `calculation`.
+Of the current records, 18,322 declare complete coverage and 87 partial coverage. Complete extraction does not mean that the ancient text is intact or that every interpretation is certain.
 
-Optional entry fields:
+## Entries and applicability
 
-| Field | Meaning |
-|---|---|
-| `action` | Addressable predicate `{id,type,state,evidence}`; `native_label` is required for `type=other`. |
-| `items` | Nonempty item array or qualified null where examined content is unrecoverable. |
-| `measurements` | Nonempty measurement array or qualified null where examined quantitative content is unrecoverable. |
-| `membership` | Explicit arithmetic operand scope for recap/balance/calculation entries. |
-| `group_members` | Mention/group-entry IDs for a group entry; not numerical addition. |
-| `allocation_basis` | `joint`, `per_member` or qualified null. |
-| `occurrence` | Anchored ordinal occasion, not a quantity, duration or regnal year. |
-| `participants` | Participant applicability links. |
-| `places` | Place applicability links. |
-| `dates` | Temporal applicability links. |
-| `purposes` | Purpose applicability links. |
+An entry requires `id`, `part_id`, `kind` and `evidence`. It represents a source-local semantic unit, not necessarily a transaction. Observed kinds are `detail`, `group`, `subtotal`, `total`, `balance` and `calculation`.
 
-Links have their own `{id,ref,role,evidence}`. This makes the application of a person/place/date/purpose to an entry separately targetable and qualified.
+An optional `action` is an addressable predicate with `{id,type,state,evidence}`; `type=other` also requires `native_label`. Type and state are separate. A receipt, issue or return predicate does not establish completion by itself. States `intended`, `owed`, `referenced`, `stated` and `source_asserts_completed` preserve the documentary force or stage. Native labels and reasoning can express distinctions finer than the controlled codes.
 
-Participant roles include `source`, `recipient`, `intermediary`, `supervisor`, `custodian`, `witness`, `beneficiary`, `document_party`, `referenced_document_party`, `associated_person`, `unclassified`. Unclassified roles retain a `native_label`. A document party is not necessarily a physical giver or recipient.
+`items` and `measurements`, when present, are nonempty arrays or qualified nulls. Null records examined content that is unrecoverable: object content for `items`, quantitative content for `measurements`. `membership` gives the arithmetic operand scope of a recap, balance or calculation. By contrast, `group_members` lists mention or group-entry IDs for a group entry; it does not instruct numerical addition. `allocation_basis` is `joint`, `per_member` or qualified null. `occurrence` identifies an anchored ordinal occasion, not a quantity, duration or regnal year.
 
-Place roles are `location`, `origin`, `destination`, `storage_location`, `reference_location`. Date roles are `document_date`, `entry_date`, `service_period`, `due_date`, `duration`, `reference_date`. Purpose links apply a known purpose through role `purpose`. A link can contain a materially unresolved null target/role with an explicit qualification.
+The optional `participants`, `places`, `dates` and `purposes` collections contain applicability links. Each link has its own `{id,ref,role,evidence}`, making the application of a person, place, date or purpose separately addressable and qualifiable. A materially unresolved target or role may be null with an explicit qualification.
 
-Action type and state are separate. A receipt/issue/return predicate does not by itself imply completion; `intended`, `owed`, `referenced`, `stated` and `source_asserts_completed` preserve documentary force/stage. Native labels and reasons retain finer distinctions than the controlled coarse index.
+Participant roles include `source`, `recipient`, `intermediary`, `supervisor`, `custodian`, `witness`, `beneficiary`, `document_party`, `referenced_document_party`, `associated_person` and `unclassified`. An unclassified role retains `native_label`. A document party need not be a physical giver or recipient.
 
-## 6. Mentions and social referents
+Place roles are `location`, `origin`, `destination`, `storage_location` and `reference_location`. Date roles are `document_date`, `entry_date`, `service_period`, `due_date`, `duration` and `reference_date`. Purpose links apply a known purpose through role `purpose`.
 
-`{id,kind,literal,search_form,part_id,evidence}` are required. Kinds are `person`, `unnamed_role_holder`, `collective`, `institution`, `place`, `deity`, or qualified null.
+## Mentions
 
-`literal` preserves the selected written occurrence. `search_form` is a conservative retrieval form or null, not a globally resolved entity identifier. A seal owner, a patronymic and an entry recipient may be distinct occurrences even when a supported local relation links them. Counts of mentions are **not counts of people**.
+A mention requires `{id,kind,literal,search_form,part_id,evidence}`. Its kind is `person`, `unnamed_role_holder`, `collective`, `institution`, `place`, `deity` or qualified null.
 
-Current populations: 107,941 personal mentions; 5,308 unnamed role holders; 8,095 collectives; 5,818 institutions; 16,137 places; 3,679 deities; 2,451 null-kind mentions. Their sum is 149,429 mention objects.
+`literal` preserves the selected written occurrence. `search_form` supplies a conservative retrieval form or null; it is not a resolved global entity identifier. A seal owner, patronymic and entry recipient may remain separate occurrences even when supported local relations connect them. Mention counts are not people counts.
 
-## 7. Items and native vocabulary
+The 149,429 current mention objects comprise 107,941 personal mentions, 5,308 unnamed role holders, 8,095 collectives, 5,818 institutions, 16,137 places, 3,679 deities and 2,451 null-kind mentions.
 
-An item has required `id`, `type_id`, `designation`, `native_term_id`.
+## Items and native terms
 
-* `type_id` is a controlled coarse item class, `unclassified`, or qualified null.
-* `designation` is exact evidence for the object/population phrase, or null for a contextually represented but unwritten designation.
-* `native_term_id` is a generated `atf:` identifier from exact selected token pieces; it is null exactly when designation is null.
-* Native-term encoding uses canonical percent-encoded UTF-8. It is not a synonym, commodity-equivalence, historical identity or dimensional conversion key.
+An item requires `id`, `type_id`, `designation` and `native_term_id`. `type_id` is a controlled coarse class, `unclassified` or qualified null. `designation` gives exact evidence for the object or population phrase; it is null when the designation is contextually represented but unwritten.
 
-Optional `attributes` has closed keys: `species`, `sex`, `material`, `quality`, `status`, `age_class`, `grade`. Attributes retain their own evidence. Lexical values preserve native-term IDs or qualified nulls; ordinal age/grade values can be supported positive integer strings. An animal class is not silently converted to biological age in years.
+`native_term_id` is a generated `atf:` identifier built from the exact selected token pieces. It is null exactly when `designation` is null. Its encoding is canonical percent-encoded UTF-8. Equal native-term IDs support exact retrieval; they do not establish synonyms, commodity equivalence, historical identity or a dimensional conversion.
 
-## 8. Measurements, expressions, quantities and rates
+Optional `attributes` uses the closed set of keys `species`, `sex`, `material`, `quality`, `status`, `age_class` and `grade`. Attributes retain their own evidence. Lexical values preserve native-term IDs or qualified nulls; ordinal age and grade values may be supported positive integer strings. An animal class is not silently converted into biological age in years.
 
-### Measurement
+## Measurements and written expressions
 
-Required: `id`, `subject_ref`, `function`, `evidence`, `expression`, `adopted`. Optional: `derivation`, `geometric_axis`.
+A measurement requires `id`, `subject_ref`, `function`, `evidence`, `expression` and `adopted`. It may also have `derivation` and `geometric_axis`.
 
-* `subject_ref` identifies the item/group-entry measured, or is qualified null.
-* Functions are `amount`, `rate`, `duration`, `relative_work`, or qualified null.
-* `expression` is the written expression authority or null. A computed non-null adopted result needs an explicit derivation rather than an invented written expression.
-* `adopted` is a quantity, a rate or qualified null. It is the canonical record's adopted interpretation, distinct from candidate alternatives and the separate operational working layer.
-* `geometric_axis` can distinguish length, breadth, height, depth. It does not turn any length into an inferred area/volume.
+`subject_ref` identifies the measured item or group entry, or is qualified null. `function` is `amount`, `rate`, `duration`, `relative_work` or qualified null. `expression` holds the written expression authority or null. A computed nonnull adopted result requires an explicit derivation, not an invented written expression.
 
-### Written expression and terms
+`adopted` is a quantity, rate or qualified null representing the canonical record's adopted interpretation. Candidate alternatives are separate. Ordinary access reads this field through the single default, which may retain it, select a justified branch or hold it null. `geometric_axis` can distinguish length, breadth, height and depth; it does not by itself authorize an inferred area or volume.
 
-Expression: `{id,rule,terms}`. Rules: `native_vector`, `entity_count`, `unresolved`. Ordered terms have `{id,op,number,unit,evidence}` and optional `unit_evidence`, `deleted`.
+A written expression has `{id,rule,terms}`. Its rule is `native_vector`, `entity_count` or `unresolved`. Ordered terms have `{id,op,number,unit,evidence}`, with optional `unit_evidence` and `deleted`.
 
-`op` is `add`, `subtract` or null; `number` is an exact rational string or null; `unit` is a supported unit code, exact native-term ID or null. Editorially deleted terms are retained with `deleted:true` but excluded from evaluation. Unknown positions stay unknown; they are not dropped as zeros.
+`op` is `add`, `subtract` or null. `number` is an exact rational string or null. `unit` is a supported unit code, an exact native-term ID or null. Editorially deleted terms remain present with `deleted:true` but are excluded from evaluation. Unknown positions remain unknown rather than becoming zeros.
 
-### Quantity
+### Quantities
 
-`{dimension,components,standard_ref}` is required. Dimensions include count, capacity, mass, length, area, volume, time, relative work, ratio, or qualified null. `components` is a nonempty map of unit identity to exact rational string.
+A quantity requires `{dimension,components,standard_ref}`. Dimensions include count, capacity, mass, length, area, volume, time, relative work and ratio, or qualified null. `components` is a nonempty map from unit identity to exact rational string. For example:
 
-Example shape: `{"dimension":"count","components":{"count":"2"},"standard_ref":null}`. A native vector preserves its separate units; do not silently add unlike components.
+    {"dimension":"count","components":{"count":"2"},"standard_ref":null}
 
-Optional `native_standard` has `{native_term_id,evidence}` and requires null `standard_ref`: it retains a written standard whose interpreted equivalence is not asserted. Optional `unit_evidence` binds native component keys to their exact evidence. `standard_ref:null` never authorizes an assumed conversion factor.
+A native vector preserves separate units; unlike components must not be silently added.
 
-### Rate
+Optional `native_standard` contains `{native_term_id,evidence}` and requires `standard_ref:null`. It preserves a written standard without asserting an interpreted equivalence. Optional `unit_evidence` binds native component keys to their exact evidence. A null `standard_ref` never licenses an assumed conversion factor.
 
-Required `numerator`, `denominator`, `population_ref`; optional `time_basis_ref`. Numerator and denominator are quantity objects. The denominator is the rate basis, not the total population amount. A population reference is source-local; an absent time basis is not implicitly daily. Source-supported geometric denominators can have an inapplicable null population distinct from a missing historical workforce.
+### Rates
 
-## 9. Arithmetic membership and derivation recipes
+A rate requires `numerator`, `denominator` and `population_ref`; `time_basis_ref` is optional. Both numerator and denominator are quantities.
 
-Membership has `{id,target_measurement_ref,state,member_measurement_ids}`. State is `complete`, `partial`, `unresolved`; unresolved uses null operands, while complete/partial retain their supported unique measurement-ID array. A group of people and the arithmetic membership of a total are different structures.
+The denominator describes the rate basis, not the total population amount. The population reference is source-local. An absent time basis does not mean daily. A source-supported geometric denominator can have an inapplicable null population; that is different from an unknown historical workforce.
 
-Recipe has required `id`, `mode`, `operation`. Modes: `calculate`, `reconstruct`. Operations: `sum_members`, `copy`, `add`, `subtract`, `multiply`, `divide`.
+## Arithmetic membership and derivation
 
-* `sum_members` refers to its sole authority `membership_id`; there is no competing duplicated operand list.
-* Other operations use ordered `input_measurement_ids`. Copy takes one input, the remaining operations two.
-* Subtraction/division preserve first-minus/divided-by-second order.
-* Addition/subtraction require compatible units/standards. Multiplication is supported population×rate or ratio scaling, not unrestricted dimensional algebra.
-* Division requires compatible scalar quantities and a nonzero divisor.
-* Dependencies must be acyclic. An incomplete sum cannot become an unconditional complete total by treating unknown inputs as zero.
-* Optional `standard_ref` binds an actually implemented conversion rule; no historical conversion follows merely from the existence of arithmetic.
+Membership has `{id,target_measurement_ref,state,member_measurement_ids}`. State is `complete`, `partial` or `unresolved`. Unresolved membership has null operands; complete and partial membership retain their supported array of unique measurement IDs. Arithmetic membership is not the same structure as a group of people.
 
-## 10. Dates, durations, intervals and purposes
+A derivation recipe requires `id`, `mode` and `operation`. Mode is `calculate` or `reconstruct`. Operations are `sum_members`, `copy`, `add`, `subtract`, `multiply` and `divide`.
 
-Temporal objects have `id`, `kind`, `evidence`, plus a kind-specific shape:
+`sum_members` takes its operands solely from `membership_id`; there is no competing duplicate operand list. Other operations use ordered `input_measurement_ids`. `copy` takes one input and the remaining operations take two. Subtraction and division preserve first-minus-second and first-divided-by-second order.
 
-| Kind | Structure |
-|---|---|
-| Calendar | At least one of `year_formula`, `year_number`, `month_name`, `month_number`, `day`; material uncertainty can be field-specific. Optional `occurrence` is an ordinal within the formula. |
-| Relative | `base_ref`, `relation`; relation before/after/during/at_start/at_end. Optional offset has nonnegative rational `value` and day/month/year `unit`. |
-| Duration | `measurement_ref` to the one duration measurement authority. |
-| Interval | Separate `start_ref`, `end_ref`, each date ID or qualified null. |
+Addition and subtraction require compatible units and standards. Multiplication supports population×rate or ratio scaling, not unrestricted dimensional algebra. Division requires compatible scalar quantities and a nonzero divisor. Dependencies must be acyclic. An incomplete sum cannot become an unconditional complete total by treating unknown inputs as zero.
 
-A date object exists in the document collection; entry links assert applicability. A seal ruler, oath ruler, reference date, accounting period and body date are not automatically the same chronological assertion.
+Optional `standard_ref` binds an actually implemented conversion rule. The mere presence of arithmetic does not establish a historical conversion.
 
-Purpose objects require `{id,category,native_term,entity_refs,evidence}`. Category is coarse or null; the native phrase and entities preserve the positive interpretation. A purpose's evidence supports the phrase; its entry link supports application to the entry.
+## Dates, durations, intervals and purposes
 
-## 11. Relations
+Every temporal object has `id`, `kind` and `evidence`, followed by fields appropriate to its kind.
 
-Every relation has `id`, `type`, `evidence`; each type has its own endpoint/value/member shape. Do not demand unused binary placeholders in a value relation or flatten a group relation into arbitrary pairs.
+A calendar object contains at least one of `year_formula`, `year_number`, `month_name`, `month_number` or `day`. Material uncertainty can attach to individual fields. Optional `occurrence` is an ordinal within the formula.
 
-| Relation family | Meaning |
-|---|---|
-| `child_of` | Directed child→parent. Does not automatically infer father, sex or a transitive family tree. |
-| `spouse_of`, `sibling_of` | Symmetric relations stored in canonical local-ID order; inspect both endpoints. |
-| `title`, `person_status` | Bearer plus value object retaining controlled code/null and exact `native_term`. |
-| `affiliation` and administrative/service links | Source-local stated connection with its actual typed endpoints and evidence. |
-| `seal_owner` | Owner occurrence→seal or composite-seal-legend part. |
-| `local_coreference` | At least two supported mention IDs within this source. Original scoped attributes remain intact. |
-| `repeated_representation` | Supported entry or measurement members; numerical contribution control requires appropriate measurement-level support. |
-| `summarizes` | Recap entry→membership where an explicit link is needed. |
-| `discharges`, `balance_of` | Source-local entry/obligation/balance scope; numerical operands remain explicit elsewhere. |
-| `unclassified` | Native relation preserved through `native_label` and its typed endpoints/value. Not empty content. |
+A relative object has `base_ref` and `relation`, with relation `before`, `after`, `during`, `at_start` or `at_end`. An optional offset has a nonnegative rational `value` and `unit` of day, month or year. A duration object uses `measurement_ref` to point to its single duration measurement authority. An interval has separate `start_ref` and `end_ref`, each a date ID or qualified null.
 
-Optional `scope_refs` limits applicability. No automatic inheritance into every child of a group is implied.
+Temporal objects belong to the document collection; entry links state where they apply. A seal ruler, oath ruler, reference date, accounting period and body date are not automatically one chronological assertion.
 
-`documentary_correspondence` occurs on four supported repeated-representation relations. It has scope `source_local_tablet_envelope`, one or two `{left_item_id,right_item_id}` pairs and nonempty `context_relation_refs`. It supports these specific documentary witnesses; it is not a universal lexical equation or a cross-source identity merge.
+Purpose objects require `{id,category,native_term,entity_refs,evidence}`. `category` is coarse or null; the native phrase and entity references preserve the substantive interpretation. The object's evidence supports the phrase, while its entry link supports application to that entry.
 
-## 12. Qualifications and alternatives
+## Relations
 
-Qualification requires `{id,targets,support,impact,reasoning_ref}`.
+Every relation has `id`, `type` and `evidence`, with endpoints, values or members appropriate to its type. A value relation does not need unused binary placeholders. A group relation should not be flattened into arbitrary pairs.
 
-* `targets` are `{record_id,field}`. `record_id` identifies the local object; `field` is a relative RFC6901 object-field pointer, not an array-index/wildcard replacement path.
-* `support`: `well_supported`, `ambiguous`, `unresolved`; no numerical probability.
-* `impact`: nonempty set drawn from `meaning`, `evidence_dependence`, `permitted_use`; not a severity score.
-* Optional `null_reason`: `not_written`, `unreadable`, `unresolved` where required for material nulls.
-* Optional `reading_marks`: `{evidence_ref,condition}` with damaged/restored/queried/unreadable/editorial correction/editorial deletion conditions.
+`child_of` is directed from child to parent. It does not infer fatherhood, sex or a transitive family tree. `spouse_of` and `sibling_of` are symmetric and stored in canonical local-ID order, so retrieval must consider both endpoints.
 
-An alternatives object has `exhaustive` and `options`. Each option has `id`, `assignments` and optional `reasoning_ref`. Each assignment has a declared `target` and schema-compatible candidate `value`. **An option is one atomic correlated bundle**; taking one field from each competing option invents an unencoded reading. `exhaustive:false` means other possibilities remain, even when only one candidate is recorded.
+`title` and `person_status` identify a bearer and a value object retaining the controlled code or null and exact `native_term`. `affiliation` and administrative or service links preserve the stated source-local connection, with its typed endpoints and evidence. `seal_owner` connects an owner occurrence to a seal or composite-seal-legend part.
 
-Candidate payloads remain accessible in advanced evidence, not as another ordinary default panel. The bounded policy can select a justified atomic bundle; a held target becomes null with branch-evidence pointers. It does not alter the canonical structure or establish a universal preference from singleton/order/support labels.
+`local_coreference` connects at least two supported mention IDs within the source, retaining their original scoped attributes. `repeated_representation` records supported entry or measurement members. Controlling numerical contribution requires appropriate measurement-level support; an entry-level connection alone is not enough.
 
-## 13. Reasoning and supporting originals
+`summarizes` links a recap entry to membership where an explicit link is needed. `discharges` and `balance_of` preserve source-local entry, obligation or balance scope; their numerical operands remain explicit elsewhere. An `unclassified` relation preserves its native content through `native_label` and typed endpoints or value. Unclassified does not mean empty.
 
-Reasoning requires `{id,evidence_refs,premise_refs,text}`. It preserves a source-specific explanation and explicit local dependencies, not just a confidence label. Optional `supporting_evidence_refs` points into separately bound supporting originals.
+Optional `scope_refs` limits a relation's applicability. A relation involving a group does not automatically apply to every child of that group.
 
-A supporting source has `{id,source_id,source_version,evidence}`. The binding is exact; it supplies documentary context, not a merged source identity or permission to import all its assertions. There are 106 such objects in 82 current records.
+Four supported repeated-representation relations contain `documentary_correspondence`. This has scope `source_local_tablet_envelope`, one or two `{left_item_id,right_item_id}` pairs and nonempty `context_relation_refs`. It supports correspondence between those specific documentary witnesses, not a universal lexical equation or cross-source identity merge.
 
-## 14. Preserved connected-evidence row contract
+## Qualifications and alternatives
 
-`data/graph/connected/` preserves one assembled **evidence** row per stored canonical record, available through `evidence_connected`. Its keys are `binding`, `nodes`, `incidences`, `convention_edges`, `qualification_targets`, `candidate_bundles`, `external_record_citations`, `identity_unions`.
+A qualification requires `{id,targets,support,impact,reasoning_ref}`. Each target is `{record_id,field}`: `record_id` identifies the local object, and `field` is a relative RFC6901 object-field pointer, not an array-index or wildcard replacement path.
 
-Node columns, in order:
+`support` is `well_supported`, `ambiguous` or `unresolved`, without a numerical probability. `impact` is a nonempty set drawn from `meaning`, `evidence_dependence` and `permitted_use`; it is not a severity score. Optional `null_reason` is `not_written`, `unreadable` or `unresolved` where required for material nulls. Optional `reading_marks` contains `{evidence_ref,condition}`, retaining damaged, restored, queried, unreadable, editorial correction or editorial deletion conditions.
 
-1. JSON pointer;
-2. local ID or null;
-3. schema kind;
-4. layer;
-5. category.
+An alternatives object contains `exhaustive` and `options`. Each option has `id`, `assignments` and optional `reasoning_ref`. Each assignment declares a `target` and a schema-compatible candidate `value`.
 
-Incidence columns, in order:
+An option is an atomic correlated bundle. Combining a field from one option with a field from a competing option invents an unencoded reading. `exhaustive:false` leaves other possibilities open, even if only one candidate is recorded.
 
-1. from-node index;
-2. to-node index;
-3. typed role;
-4. exact reference pointer;
-5. layer;
-6. optional resolution class;
-7. optional target pointer.
+Candidate payloads remain accessible through advanced evidence, not as a second ordinary default panel. The bounded policy can select a justified whole bundle; otherwise, a held target becomes null with branch-evidence pointers. The policy does not change canonical structure or derive a universal preference from option count, order or support labels.
 
-Node identity is the immutable record binding plus pointer. ID-less quantities, spans, target objects and component maps are nodes too. `contains` is syntactic containment, not historical identity or semantic entailment. N-ary assertions retain role-bearing incidences. Candidates, separate convention edges and external documentary citations remain distinguishable; `identity_unions` is empty.
+## Reasoning and supporting originals
 
-The preserved evidence graph contains **5,073,009 nodes** and **8,683,442 incidences** across all 18,412 stored records. These are an expanded view of the same records, not extra canonical documents and not a frozen count of default-graph nodes.
+A reasoning object requires `{id,evidence_refs,premise_refs,text}`. It preserves the source-specific explanation and explicit local dependencies rather than reducing them to a confidence label. Optional `supporting_evidence_refs` points into separately bound supporting originals.
 
-Ordinary `connected`, `neighbours` and typed retrieval rebuild connectivity from the same default as `record`/search. Nodes use the `research_default` layer; selected/default references are followed, null endpoints are not replaced with old evidence endpoints, and candidate/convention links are not asserted as default edges. Qualifications targeting objects beneath a null default retain their source target/disposition. Stable keys use source/version/pointer, not presentation node indices. See [SEMANTICS](SEMANTICS.md) for scope.
+A supporting source has `{id,source_id,source_version,evidence}`. Its exact binding supplies documentary context. It neither merges source identities nor authorizes importing every assertion from that source. There are 106 supporting-source objects in 82 current records.
 
-## 15. Preserved current canonical-content inventory
+## Connected evidence
 
-| Canonical path/family | Objects | Records containing content |
-|---|---:|---:|
-| Entries | 172,723 | 17,757 |
-| Mentions | 149,429 | 18,153 |
-| Relations | 171,251 | 17,129 |
-| Items | 167,028 | 16,357 |
-| Measurements | 165,959 | 15,859 |
-| Evidence anchors | 872,362 | 18,409 |
-| Parts | 23,169 | 18,409 |
-| Temporal objects | 23,267 | 14,495 |
-| Purposes | 13,777 | 6,677 |
-| Qualifications | 251,231 | 18,141 |
-| Reasoning objects | 246,756 | 18,141 |
-| Derivations | 1,172 | 313 |
-| Arithmetic memberships | 4,422 | 1,549 |
-| Alternative sets | 3,537 | 1,998 |
-| Geometric-axis measurements | 683 | 66 |
+`data/graph/connected/` preserves one assembled evidence row for each stored canonical record, available through `evidence_connected`. Each row has `binding`, `nodes`, `incidences`, `convention_edges`, `qualification_targets`, `candidate_bundles`, `external_record_citations` and `identity_unions`.
 
-These evidence counts exclude the three archival-only records; they do not count populated default fields after machine nulling. Source-presence columns overlap and are not additive. Candidate alternative values are not counted as adopted measurements. There are 933 observed structural paths and 1,220 object key-shapes. The dataset is genuinely heterogeneous: 652 current source records have no entries yet preserve other content, while the largest has 701 entries. Use exact paths, qualifications and counting units rather than treating one flat table as the entire record.
+Node columns are ordered as JSON pointer, local ID or null, schema kind, layer and category. Incidence columns are ordered as from-node index, to-node index, typed role, exact reference pointer, layer, optional resolution class and optional target pointer. Consumers must preserve these positions.
+
+A node's identity is its immutable record binding plus pointer. ID-less quantities, spans, target objects and component maps are nodes too. `contains` denotes syntactic containment, not historical identity or semantic entailment. N-ary assertions retain role-bearing incidences. Candidate bundles, convention edges and external documentary citations remain distinguishable. `identity_unions` is empty.
+
+Across the 18,412 stored records, the preserved evidence graph has 5,073,009 nodes and 8,683,442 incidences. It expands the same records rather than adding canonical documents. These are not fixed counts for the default graph.
+
+Ordinary `connected`, `neighbours` and typed retrieval rebuild connectivity from the same default used by `record` and search. Nodes use the `research_default` layer. Selected and default references are followed; null endpoints are not replaced with their old evidence endpoints. Candidate and convention links are not asserted as default edges.
+
+When qualifications target objects beneath a null default, their source targets and dispositions remain available. Stable keys use source, original version and pointer, not presentation-local node indices. See [semantics](SEMANTICS.md) for the distinction between containment, source-local assertions and documentary connections.
+
+## Current canonical-content inventory
+
+The following counts cover preserved canonical evidence for the 18,409 current records, excluding the three archival-only records. They do not measure nonnull default fields after machine decisions. Record populations overlap and must not be added together.
+
+There are 172,723 entries in 17,757 records, 149,429 mentions in 18,153 records and 171,251 relations in 17,129 records. Items number 167,028 across 16,357 records; measurements number 165,959 across 15,859 records. Candidate alternative values are not counted as adopted measurements.
+
+All 18,409 current records contain evidence anchors and parts: 872,362 anchors and 23,169 parts in total. There are 23,267 temporal objects in 14,495 records and 13,777 purposes in 6,677 records.
+
+Qualifications number 251,231 and reasoning objects 246,756, each occurring in 18,141 records. There are 3,537 alternative sets in 1,998 records.
+
+Arithmetic structures include 1,172 derivations in 313 records and 4,422 memberships in 1,549 records. Geometric-axis measurements number 683 across 66 records.
+
+The evidence contains 933 observed structural paths and 1,220 object key-shapes. Its records vary substantially: 652 current sources have no entries but preserve other content, while the largest has 701 entries. Analyses therefore need explicit paths, qualifications and counting units rather than an assumption that every source has the same flat structure.

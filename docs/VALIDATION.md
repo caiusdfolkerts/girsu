@@ -1,80 +1,78 @@
-# Validation and release scope
+# Validation
 
-Validation binds exact data, a single default, portable access and explicit scope. It is not a claim that a machine has interpreted every source sentence or that every ancient interpretation received external human peer review.
+Validation addresses three questions: whether the released bytes match their recorded bindings, whether the portable reader handles them consistently, and whether the default policy stays within its stated rules. These checks do not establish that every source sentence has been interpreted, that every interpretation is correct, or that the corpus has received external human peer review.
 
-## 1. Checks to run after obtaining the release
+## Checking a downloaded release
 
-From the directory containing `girsu.py`, `data/`, `tests/` and `MANIFEST.json`:
+From the directory containing `girsu.py`, `data/`, `tests/`, and `MANIFEST.json`, run:
 
 ```sh
 python girsu.py verify
 python -m unittest discover -s tests
 ```
 
-Use Python 3.11+ and its standard library. The reader/tests do not require a database, network connection, parser build, private workspace or the original repository. Keep the manifest with the release: source/default indexes and partitions are verified against it, not trusted merely because a filename exists.
+The reader and tests use Python 3.11 or later and its standard library. They require no database, network connection, parser build, private workspace, or original repository. Keep `MANIFEST.json` with the data: indexes and partitions are verified against it rather than trusted because their filenames exist.
 
-The manifest's own SHA-256 identifies the exact package. The default index also carries a policy fingerprint, which the reader checks before use. Each default row has its own content hash and exact source/version/original-witness bindings. A mismatch fails rather than silently substituting another version or recomputing an unpinned interpretation.
+The manifest's own SHA-256 identifies the package. The default index carries a policy fingerprint checked by the reader, and each default row has a content hash and exact source, version, and original-witness bindings. A mismatch causes failure; the reader does not silently substitute another version or recompute an unpinned interpretation.
 
-The materialization audit's retained `reader_sha256` identifies the private build/materializer used to create defaults, not the smaller public consumer file. The shipped `girsu.py` is hashed separately by the root manifest. Do not compare those two different implementation artifacts as though they should share a digest.
+The materialization audit's `reader_sha256` identifies the private build/materializer that produced the defaults. It does not identify the smaller public consumer file. The shipped `girsu.py` has its own hash in the root manifest, so those two implementation artifacts should not be expected to share a digest.
 
-## 2. Source-evidence checks
+## Preservation of source evidence
 
-The original immutable source database SHA is `b02f70a3c3c01bfe96428e04ce674f19e21dbb620a463dd699034915c644205c`. All 18,412 selected record byte sequences and 38,046 original witness rows were independently hash-checked. Every selected record's original SHA and byte count resolves to an exact stored witness. Canonical/original evidence is not changed by defaulting.
+All 18,412 selected canonical byte sequences and all 38,046 original-witness rows were independently hash-checked against the export bindings. Every selected record's original SHA and byte count resolves to an exact stored witness. Default selection changes neither canonical nor original evidence.
 
-The source denominator is 18,409 current plus three explicit archival-only records. The catalogue-only appendix has 11,048 IDs without saved ATF, disjoint from the 19,208 registered textual sources. Defaults exist for the 18,412 selected source records, not for every catalogue-only or availability ID.
+The immutable source database is identified by:
 
-The preserved evidence graph's pointers, reference targets, shared-vocabulary links and all 156 accounting proof locators were mechanically audited. Those checks validate bindings and representation; they do not turn graph incidences into independent historical observations. Historical cached proof datasets are not presented as newly recomputed default consequences.
+```text
+b02f70a3c3c01bfe96428e04ce674f19e21dbb620a463dd699034915c644205c
+```
 
-## 3. Bounded default-policy coverage
+The selected population is 18,409 current records and three archival-only records. It is not the entire catalogue. The 11,048 catalogue-only IDs without saved ATF are disjoint from the 19,208 registered textual sources. Defaults exist for the 18,412 selected records, not for every catalogue or documentary-availability ID.
 
-The bounded 1.1 pass visited all **3,537 structured alternative sets**, **6,026 options** and **8,425 assignments** across 18,412 stored records. It selected **26 typed decisions**, held **3,511 typed sets**, and selected **one additional bounded prose decision**. Of the 27 selected decisions, **13** used exact source evidence-anchor verification and **14** used supported source-record reasoning alone.
+The preserved evidence graph's pointers, reference targets, shared-vocabulary links, and all 156 accounting proof locators were mechanically audited. These checks establish that the representation is bound to its evidence. They do not make graph incidences independent historical observations, and historical cached proofs are not presented as newly recomputed consequences of the default.
 
-The held typed sets comprise 3,497 cases where the machine did not establish a source preference and 14 unresolved-overlap cases. These counts are sets/decisions, not unusable documents or historical facts. A held field becomes null in the ordinary default, with its evidence and null cause retained. Source ambiguity and machine inability are separately reported.
+## Scope of the default policy
 
-The defaults additionally preserve **10,601 source-qualified-not-machine-resolved annotations**. These are scoped contextual warnings, not additional proven branches or instructions to null every field sharing a reason.
+The bounded 1.1 pass examined all 3,537 structured alternative sets, containing 6,026 options and 8,425 assignments, across the 18,412 stored records. It selected 26 typed decisions and held 3,511 typed sets. It also selected one bounded prose decision. Of the resulting 27 selected decisions, 13 used exact source evidence-anchor verification and 14 relied on supported source-record reasoning alone.
 
-The wider scan produced **9,512 prose-signal review items** from 246,786 stored reasoning objects. Signals are not proven alternative sets, selected readings or an assertion of complete semantic analysis. Unparsed prose is not universally converted into branches or used as a blanket-null instruction. The policy is a bounded deterministic grammar with explicit anchor/dependency checks, not universal natural-language understanding or a source-ID whitelist.
+Among the held typed sets, 3,497 had no source preference established by the machine and 14 had unresolved overlaps. These are counts of sets and decisions, not unusable documents or historical facts. A held field is null in the ordinary default, while its evidence and the cause of the null remain available. The annotations distinguish ambiguity in the source from the machine's inability to resolve it.
 
-Existing atomic assignments are accepted only with supported target binding and evidence. Singleton status, option order, inherited support labels and arbitrary confidence do not establish preference. Unproved dependencies, inconsistent bundles, joint-world ambiguity and repeated-witness conflicts fail closed. Evidence verification checks existing candidates and exact anchors; it does not extract new source candidates or choose values to balance totals.
+Defaults also retain 10,601 `source-qualified-not-machine-resolved` annotations. These are contextual warnings with a defined scope, not further proven branches or instructions to null every field sharing a reason.
 
-## 4. Required regression behavior
+A wider scan produced 9,512 prose-signal review items from 246,786 stored reasoning objects. A signal is not a proven alternative set, a selected reading, or evidence of complete semantic analysis. Unparsed prose is neither universally converted into branches nor used to null fields indiscriminately. The policy uses a bounded deterministic grammar with explicit anchor and dependency checks; it is not universal natural-language understanding or a source-ID whitelist.
 
-Consumer regression tests and release-command checks exercise the materialized records and actual portable reader, including:
+Existing atomic assignments are accepted only when their target binding and evidence are supported. A singleton option, its position, an inherited support label, or an arbitrary confidence value does not establish preference. Unproved dependencies, inconsistent bundles, joint-world ambiguity, and repeated-witness conflicts fail closed. Evidence verification tests existing candidates against exact anchors; it does not extract new candidates or choose values merely to balance totals.
 
-* one default across record, field, scalar-search and graph methods;
-* held-null targets retaining branch/qualification/evidence pointers;
-* valid source fields beneath null ancestors returning annotated null, while misspelled paths still fail;
-* P102673's restored **1,1,2,2** and encoded schedule **177**, with written **217** and discrepancy **20** preserved;
-* P105740's supported administrator title, distinct from P204204's primary queried judge interpretation, with no new relation taxonomy or global identity;
-* exact rational strings, field-local qualification scope and preservation of source/original bytes;
-* current-only access and explicit archival opt-in;
-* bounded search/cursor behavior and manifest/default hash/fingerprint enforcement;
-* source-local endpoint connectivity without stale asserted edges from held alternatives.
+## Reader and policy regressions
 
-The underlying reviewed policy suites also exercised negation/rejection/hypothetical wording, wrong-target binding, exact numeric anchors, atomic dependencies and repeated-witness protection. Derived refresh was tested against stale expression caches, changed repeated witnesses, transitive rate/time-basis changes and unrelated-cache preservation. Native-standard evidence remains attached to the quantity it supports rather than leaking across unrelated recipes.
+The consumer regressions test that record, field, scalar-search, and graph methods expose the same materialized default. Held-null targets must retain their branch, qualification, and evidence pointers. A valid source field beneath a null ancestor must return an annotated null, whereas a misspelled path must still fail. Tests also cover exact rational strings, field-local qualification scope, preservation of source and original bytes, current-only access with explicit archival opt-in, bounded search and cursors, and enforcement of manifest, default-hash, and policy-fingerprint checks. Source-local graph endpoints must remain connected without asserting stale edges from held alternatives.
 
-These are rule/implementation tests and selected regression fixtures, not fresh expert collation of every original text or independent scientific review credit. See the shipped test output and manifest-bound validation records for the exact final consumer test inventory; do not add test totals from overlapping suites as though they measured different sources.
+Two fixtures preserve particularly specific distinctions. For `P102673`, the tests retain the restored **1,1,2,2** and encoded schedule **177**, alongside written **217** and discrepancy **20**. For `P105740`, they test the supported administrator title separately from `P204204`'s primary queried judge interpretation. Neither fixture introduces a new relation taxonomy or global identity.
 
-For the final 1.1 consumer candidate, **17 portable-reader tests and 10 cookbook tests passed**. The documented CLI commands and six source-filtered cookbook recipes were also executed against that same materialized default. These suite counts describe software checks, not additional source records or scientific reviews. Final package integrity is checked again by the manifest verification command after assembly.
+The underlying reviewed policy suites also tested negation, rejection, and hypothetical wording; wrong-target bindings; exact numeric anchors; atomic dependencies; and repeated-witness protection. Derived-refresh tests covered stale expression caches, changed repeated witnesses, transitive rate/time-basis changes, and preservation of unrelated caches. Native-standard evidence must remain attached to the quantity it supports rather than being applied across unrelated recipes.
 
-## 5. Materialization and portability
+For the final 1.1 consumer candidate, 17 portable-reader tests and 10 cookbook tests passed. The documented CLI commands and six source-filtered cookbook recipes were executed against the same materialized default. Final package integrity is checked again after assembly by manifest verification.
 
-Defaults are precomputed data under `data/default_records/`, including 18,409 current and three explicit archival records. The ordinary reader is a small standard-library consumer; it does not run the scientific parser on every query. Source-indexed gzip partitions allow single-source access without loading a corpus-sized list. The final materialization binds its content and policy fingerprint separately from the preserved canonical source hash.
+These results concern implementation rules and selected regression fixtures. They are not fresh expert collations of every original text and do not confer independent scientific review credit. The shipped test output and manifest-bound validation records give the exact final inventory. Counts from overlapping suites must not be added as if they represented different sources or scientific reviews.
 
-Full scans still take work: prefer source-filtered calls or `search_page` for an interactive first look. An empty bounded page can precede results in later sources. Preserve its exact cursor and check `exhausted`; do not mistake a limited page for a corpus count. No query-latency claim is inferred from an earlier reader or a different machine.
+## Materialization and portable access
 
-## 6. Documentary and lineage checks
+The defaults in `data/default_records/` are precomputed data: 18,409 current records and three explicit archival records. The ordinary reader consumes them rather than running the scientific parser for each query. Source-indexed gzip partitions permit single-source access without loading a corpus-sized list. Default content and its policy fingerprint are bound separately from the preserved canonical source hash.
 
-All **106** documentary citations are retained once: 101 exact canonical joins and five unresolved canonical boundaries. All five unresolved cases still have exact original witnesses. Resolver statuses distinguish missing selected canonical payloads from mismatched original versions; they do not fabricate a target.
+Full scans still require work. For an interactive first look, use source-filtered calls or `search_page`. An empty bounded page can occur before matching results in later sources; preserve its exact cursor and check `exhausted`. A limited page is not a corpus count. Performance observations from another reader or machine do not establish query latency for this release.
 
-All **4,553** declared historical predecessor payloads are unshipped in this selected export. Their explicit historical disposition is not a broken current-source link. The **91** reconstruction-origin sources are a different lineage cohort: their current records and originals are present. The documentary alias remains documentary-only, with no identity merge.
+## Documentary links and review lineage
 
-Source author/reviewer attribution, the specific 623 author-self-check authority, audits/holds and exact-version resolutions remain provenance. Default selection creates zero independent scientific review credit and clears no hold. See [provenance](PROVENANCE.md) for the original authority denominators.
+The release retains each of the 106 documentary citations once. Of these, 101 join to an exact selected canonical target and five remain unresolved at the canonical level. All five unresolved cases still have exact original witnesses. Resolver statuses distinguish an absent selected canonical payload from a selected target bound to a different original version; no replacement target is fabricated.
 
-## 7. What is deliberately not claimed
+All 4,553 declared historical predecessor payloads are outside this selected export. Their explicit historical disposition is not a broken current-source link. The 91 reconstruction-origin sources form a separate lineage cohort: their current records and originals are present. The documentary alias remains documentary-only and performs no identity merge.
 
-No new global identity closure, speculative relation categories, absolute chronology, metrological conversion table, cross-document economic grand total or external scholarly-consensus ranking is supplied. Original native labels and source-local relations remain intact and searchable. The data exposes one practical default, null where appropriate, with the pointers needed to inspect its evidential basis.
+Author and reviewer attribution, the specific authorization for 623 author-self-check sources, audits, holds, and exact-version resolutions remain part of the provenance. Default selection adds no independent scientific review credit and clears no hold. [Provenance](PROVENANCE.md) gives the authority populations and explains why accepted decisions, delivery status, and later audit dispositions must be read separately.
 
 ## Known candidate-encoding issues
 
-`data/KNOWN_ENCODING_ISSUES.json` indexes 13 options in eight qualification sets whose candidate reference types cannot be fully validated. Their original assignments and exact diagnostics are retained. These options are not selected as defaults, but encoding trouble does not scientifically disprove an interpretation. This is separate from missing originals, current-record coverage, and historical-version availability.
+[`data/KNOWN_ENCODING_ISSUES.json`](../data/KNOWN_ENCODING_ISSUES.json) identifies 13 options in eight qualification sets whose candidate reference types cannot be fully validated. Their original assignments and exact diagnostics remain available. None of these options is selected as a default, but an encoding defect does not scientifically disprove an interpretation. These issues are separate from missing originals, current-record coverage, and the availability of historical versions.
+
+## Limits of the release
+
+The release supplies no new global identity closure, speculative relation categories, absolute chronology, metrological conversion table, cross-document economic grand total, or ranking of external scholarly consensus. Native labels and source-local relations remain intact in the preserved evidence; ordinary default labels remain searchable unless explicitly held null, as documented. The ordinary interface offers one practical default, including nulls where required, with pointers back to its evidence. Its consistency and reproducibility should not be mistaken for scientific completeness.

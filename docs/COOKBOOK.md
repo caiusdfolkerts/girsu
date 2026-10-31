@@ -1,8 +1,10 @@
-# Small field and occurrence queries
+# Field and occurrence queries
 
-`query_examples.py` demonstrates six streaming retrieval patterns over the **same single default** as `girsu.py`. These are examples of existing fields/kinds, not a new research classification system, semantic taxonomy or identity layer. Use Python's standard library.
+`query_examples.py` provides six streaming retrieval patterns over the same single default used by `girsu.py`. They retrieve existing fields and kinds; they do not introduce a research classification, semantic taxonomy, or identity layer. The examples use Python's standard library.
 
-From the release root, start with exact source-filtered examples:
+## Starting with a source
+
+Run these commands from the release root to inspect a single source:
 
 ```sh
 python query_examples.py genre null --root . --source P100144
@@ -13,44 +15,44 @@ python query_examples.py relation metrological_standard --root . --source P10014
 python query_examples.py person 'ur-{d}nin-a-zu' --root . --source P100144
 ```
 
-Repeat `--source` to inspect several exact IDs. Omit it for a streaming corpus scan. `--limit 10` emits only a prefix; it is **not a corpus count**. Current sources are the default; `--archival` explicitly includes archival selected sources and retains `current:false`.
+Repeat `--source` to inspect several exact IDs, or omit it for a streaming corpus scan. `--limit 10` returns a prefix, not a corpus count. Queries use current sources by default. Adding `--archival` explicitly includes selected archival sources and retains their `current:false` status.
 
-## Matching and counting units
+## What a match represents
 
-| Mode | Matching rule | One row means |
-|---|---|---|
-| `genre receipt` | Exact default controlled genre | One document |
-| `genre null` | Actual null, not the string “null” | One document with null default genre |
-| `date mu` | Literal substring of calendar year formula/month name | One calendar expression, with entry applicability |
-| `institution szabra` | Literal substring of institution mention literal/search form | One mention occurrence |
-| `commodity barley` | Literal substring of item type ID or exact native-term ID | One item, with directly linked same-entry measurements |
-| `relation metrological_standard` | Exact `native_label` on an unclassified relation | One source-local relation with endpoint pointers |
-| `person ...` | Literal substring of person mention literal/search form | One mention occurrence |
+A genre query such as `genre receipt` matches the exact default controlled genre and returns one row per document. `genre null` matches an actual null rather than the string “null”, returning documents whose default genre is null.
 
-Substring matching is case-insensitive, with no spelling/transliteration normalization, synonym equation or identity merging. Matching both literal and search form on one mention gives one row. A literal can match while its interpreted search form is null; that null and its explanation remain in the output. An institution occurrence is not a uniquely identified historical institution, and a personal occurrence is not a people count.
+The `date mu` recipe matches a literal substring in a calendar year formula or month name. Each row represents one calendar expression and includes its entry applicability. This recipe does not search intervals, durations, or relative dates, and it supplies no absolute chronology.
 
-The relation recipe searches the exact preserved label, including explanatory English labels where present. It does not reclassify them. The date recipe searches calendar strings only, not intervals/durations/relative dates, and supplies no absolute chronology.
+The institution and person recipes match literal substrings in a mention's literal or search form. Each row represents a mention occurrence, not a uniquely identified historical institution or person. Matching both forms of the same mention still produces one row. A literal can match even when its interpreted search form is null; the output retains that null and its explanation. Personal occurrences must not be read as a count of people.
 
-## Provenance travels with the row
+The `commodity barley` recipe matches a literal substring of an item type ID or an exact native-term ID. Each row represents one item, accompanied by directly linked measurements from the same entry.
 
-Each result includes source ID, original source-record `version_hash`, current status, layer, exact pointer/local ID, one default `value`, separate `has_branches`/`has_ambiguity` flags, applicable qualifications, labelled branch/qualification annotations, evidence pointers and context.
+The `relation metrological_standard` recipe matches the exact `native_label` on an unclassified relation. Each row represents one source-local relation with endpoint pointers. The query uses the preserved label, including explanatory English labels where present, without reclassifying the relation.
 
-Direct source anchors include exact original SHA and coordinates. Genre and other fields can have indirect evidence through qualifications/reasons rather than their own direct evidence list. Follow those pointers. The original source-record hash does not hash an edited/default result row.
+Substring matching is case-insensitive. It does not normalize spelling or transliteration, equate synonyms, or merge identities.
 
-Linked measurements, dates and endpoints keep their own scoped qualification/branch maps under context. A qualification on a quantity is not falsely attached to the item noun, nor one endpoint's uncertainty to every relation participant. Check context as well as the row target. `has_branches` refers only to identified choices; `has_ambiguity` also covers scoped qualification context. Neither is a certainty certificate. Annotation `is_identified_branch` distinguishes a real choice set from the 10,601 qualification-only annotations across the stored population.
+## Reading the evidence in a result
 
-Calendar applicability preserves roles such as document date, reference date or service period. A rate's numerator/denominator/population/time basis remains distinct from an amount. Native-vector units are not silently converted or added across unlike components. Null is not zero.
+Each result carries the source ID, original source-record `version_hash`, current status, layer, exact pointer or local ID, and one default `value`. It also includes separate `has_branches` and `has_ambiguity` flags, applicable qualifications, labelled branch and qualification annotations, evidence pointers, and context. The original source-record hash identifies the preserved source record; it does not hash the default result row.
 
-## JSONL and reversible CSV
+Direct source anchors give the exact original SHA and coordinates. Some fields, including genre, instead have indirect evidence through qualifications or reasons. Follow those pointers rather than assuming that an absent direct evidence list means there is no support.
 
-JSON Lines is the default and preserves nested provenance and rational strings:
+Context matters because linked measurements, dates, and endpoints retain their own scoped qualification and branch maps. A quantity's qualification is not attached indiscriminately to the item noun, nor is one endpoint's uncertainty attributed to every participant in a relation. Inspect the context as well as the row target.
+
+`has_branches` identifies choices; `has_ambiguity` also covers scoped qualification context. Neither flag certifies certainty. The annotation field `is_identified_branch` distinguishes an actual choice set from the 10,601 qualification-only annotations across the stored population.
+
+Calendar applicability retains roles such as document date, reference date, and service period. A rate's numerator, denominator, population, and time basis remain distinct from an amount. Native-vector units are neither silently converted nor summed across unlike components. A null is not zero.
+
+## Exporting JSON Lines or CSV
+
+JSON Lines is the default output format. It preserves nested provenance and exact rational strings. For example:
 
 ```sh
 python query_examples.py commodity barley --root . --source P100144 > barley.jsonl
 python query_examples.py commodity barley --root . --source P100144 --format csv > barley.csv
 ```
 
-Every CSV cell is a **JSON value**, including strings and nulls. Decode it with `json.loads`; import spreadsheet columns as text. This preserves `"1/2"` as an exact string rather than a spreadsheet date, distinguishes null from empty text and prevents strings from beginning executable formulas. Nested provenance stays JSON, not duplicated row expansion.
+Every CSV cell contains a JSON value, including strings and nulls. Decode each cell with `json.loads`, and import spreadsheet columns as text. This convention preserves `"1/2"` as an exact string rather than a spreadsheet date, distinguishes null from empty text, and prevents strings from beginning executable formulas. Nested provenance stays in JSON instead of expanding into duplicated rows.
 
 ```python
 import csv, json
@@ -65,4 +67,4 @@ with open('barley.csv', newline='', encoding='utf-8') as stream:
 exact_half = Fraction('1/2')  # exact arithmetic; no missing unit conversion is supplied
 ```
 
-For general scalar search rather than these typed recipes, use `Graph.search_page`: an empty page need not be exhausted. Pass its exact `next_cursor`, check `exhausted` and never treat a limited page as a corpus denominator. See [README](../README.md) and [semantics](SEMANTICS.md).
+For general scalar search rather than these typed recipes, use `Graph.search_page`. An empty page need not mean that the search is exhausted. Pass its exact `next_cursor`, check `exhausted`, and do not use a limited page as a corpus denominator. The [README](../README.md) and [semantics](SEMANTICS.md) explain the broader interface.

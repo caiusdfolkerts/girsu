@@ -1,88 +1,81 @@
-# Semantics of the single default
+# Reading the graph
 
-## 1. One value with its context
+The graph provides one default reading of each source. `Graph.record`, `pointer`, `research_value`, `research`, `search`, `search_all`, `search_page`, `connected`, `neighbours`, `typed_nodes` and `typed_relations` all use that same precomputed reading. Where the default policy cannot select a branch, its target is held null. Ordinary queries neither offer a second competing reading nor search rejected alternatives as if they were accepted facts.
 
-`Graph.record`, `pointer`, `research_value`, `research`, `search`, `search_all`, `search_page`, `connected`, `neighbours`, `typed_nodes` and `typed_relations` consume the **same precomputed default**. A branch-qualified field can be selected or held null. Ordinary queries do not return parallel canonical/working values or silently search rejected alternatives as facts.
+The original source-local structures and native vocabulary remain available. The release does not impose a new historical interpretation or reclassify relations into a new ontology: existing coarse codes and native labels retain their meanings. The [data dictionary](DATA_DICTIONARY.md) describes the fields; [provenance](PROVENANCE.md) explains their bindings to the preserved records and original texts.
 
-This is a data foundation, not a supplied historical theory, research agenda or category ontology. It preserves the original source-local structures and native vocabulary. No new semantic relation reclassification is performed; the existing coarse codes and native labels remain the contract.
+## A value and its qualifications
 
-`research_value(source_id,pointer)` adds:
+`research_value(source_id, pointer)` returns one `value` together with its source ID, original record `version_hash`, original witness hash and exact pointer. It also returns the separate hash of the materialized default record. The reader checks the release policy fingerprint in the default index.
 
-* one `value`, source ID, original record `version_hash`, original witness hash and exact pointer;
-* applicable `qualifications`, with resolved target pointers and reasoning/evidence references;
-* `branches`, containing decision status, targets, evidence/option pointers, dependencies and applicable hashes;
-* distinct `has_branches`/`has_ambiguity` flags and counts, diagnostics and bounded-policy coverage metadata;
-* the separate default-record hash from the materialized row; the reader also verifies the release policy fingerprint in the default index.
+The accompanying `qualifications` identify the applicable targets and their reasoning and evidence references. The `branches` annotations retain decision status, targets, evidence and option pointers, dependencies and applicable hashes. Diagnostics and coverage metadata describe what the bounded policy did; they do not certify that it understood every statement in the source.
 
-The preserved `branches` list contains labelled annotations, not only proven branch sets:
+Despite its name, `branches` includes qualification-only annotations as well as identified choice sets. Each annotation distinguishes these with `is_identified_branch` and `annotation_kind`. `identified_branch_count` counts actual identified branches; `qualification_annotation_count` counts the other annotations. `has_branches` is true only when the identified count is positive. `has_ambiguity` is broader: it is true when the scope contains any preserved annotation or an applicable qualification marked ambiguous or unresolved.
 
-| Field | Exact meaning |
-|---|---|
-| `is_identified_branch`, `annotation_kind` | On each annotation: a branch/choice set versus qualification-only context. |
-| `identified_branch_count`, `has_branches` | Count of identified branches; boolean is true only when that count is positive. |
-| `qualification_annotation_count` | Count of the nonbranch qualification annotations. |
-| `has_ambiguity` | Any preserved scoped annotation, or an applicable ambiguous/unresolved qualification. |
+Field access recalculates these counts and flags from overlapping targets and applicable qualifications. A selected branch can remain qualified, and a field can have `has_branches:false` but `has_ambiguity:true`. Well-supported qualifications can also exist without either flag. Neither flag measures probability or certainty. A qualification attached to another field or a linked object does not automatically qualify the field being read.
 
-Field access recalculates flags/counts over overlapping targets and applicable qualifications. A selected but qualified branch can remain flagged. Neither flag is a probability, certainty judgment or complete prose-analysis certificate. A field can have `has_branches:false` yet `has_ambiguity:true`; well-supported qualifications can also exist without either flag. Context on another field or linked object must not be indiscriminately transferred to the field being used.
+When an actual evidence field lies beneath an ancestor held null in the default, `research_value` returns null with `value_status='null_due_to_unresolved_ancestor'`, the ancestor pointer and the applicable context. It does not turn a misspelled path into a null field: invalid source paths still fail. Strict `pointer` traversal can raise an error beneath a null ancestor; use `research_value` when you need the annotated result.
 
-An actual evidence field beneath a held-null ancestor has one default null, with `value_status='null_due_to_unresolved_ancestor'`, the ancestor pointer and normal qualification/branch context. A typo is not converted into a null field: invalid source paths still fail. Strict `pointer` traversal can raise beneath a null; prefer `research_value` when an annotated field result is needed.
+## What the default policy can establish
 
-## 2. Source uncertainty versus machine abstention
+A source may describe a reading as ambiguous, unresolved, restored, queried or well-supported. The default policy asks a separate question: can its supported rules establish a preference? `machine_reason_not_established` means that the machine did not establish one. It does not mean that the ancient text or its interpreter offered no reason.
 
-The source record can say a reading is ambiguous, unresolved, restored, queried or well-supported. The bounded default policy separately asks whether a preference can be established by its supported rules. `machine_reason_not_established` means **the machine did not establish the preference**, not that the ancient text or its interpreter supplied none.
+The policy visited all 3,537 structured alternative sets. It selected 26 typed choices and held 3,511 typed sets; it also selected one bounded prose choice. These are different counting units from the number of sources or changed fields. The 9,512 prose signals are a review queue, not additional proven branches or evidence of comprehensive prose understanding.
 
-All 3,537 structured alternative sets were visited. Twenty-six typed choices were selected, one bounded prose choice was selected, and 3,511 typed sets were held. Alternative count, selected decision count, source count and changed field count are not interchangeable. The 9,512 prose signals form a review queue, not additional proven branches; no universal prose-understanding claim is made.
+The materialized context also retains 10,601 `source_qualified_not_machine_resolved` annotations. These record the scope of source qualifications without an established machine selection. They are not another 10,601 parsed alternatives, and they do not require unrelated fields to be nulled.
 
-The materialized context also retains **10,601 `source_qualified_not_machine_resolved` annotations**. These preserve a source qualification's scope where it has no established machine selection. They are not another 10,601 parsed/proven alternatives and do not instruct blanket nulling of unrelated fields.
+Neither a single recorded option nor its position in an array is enough to select it. Coarse support labels, source IDs and mechanical edition priority are not selection rules either. A correlated option must be justified as a whole. Unproved dependencies, conflicting or overlapping bundles and joint-world constraints fail closed. A selected restoration keeps its original marks and its dependence on the evidence.
 
-Selection does not follow singleton option count, array order, a coarse support label, source ID or a mechanical edition-priority rule. Each correlated option must be justified as a whole. Unproved dependencies, conflicting/overlapping bundles and joint-world constraints fail closed. A selected restoration retains its original marks and evidence dependence.
+Held targets become null in the default; their source values and candidate bundles remain available through advanced evidence pointers. A qualification without a machine selection does not justify erasing unrelated intact values. Missing optional fields, explicit nulls, empty collections and zero continue to mean different things.
 
-Held targets are null in the default; source values and candidate bundles remain reachable through advanced evidence pointers. Qualifications without a machine selection do not justify erasing unrelated intact values. Missing optional fields, explicit nulls, empty collections and zero remain different representations.
+## Three examples
 
-## 3. The required examples
+### P102673: a restoration is not an arithmetic correction
 
-### P102673: restoration without forced balancing
+The restored counts 1, 1, 2, 2 have numeric evidence anchors checked against the exact bound original. They support the encoded conditional schedule of 177, rather than just the readable-details subtotal of 171. The difference of six does not itself prove those readings; their textual support is independent of whether they balance the account.
 
-The encoded restored counts **1,1,2,2** have their existing numeric evidence anchors checked against the exact bound original. They support the encoded conditional schedule **177**, rather than only the readable-details subtotal 171. The gap of six does not prove those individual readings; their textual support is independent of balancing.
+The written principal remains 217, with its discrepancy of 20. Calculated paths totaling 237 remain diagnostics. The policy does not replace the principal to reduce discrepancies, force two accounts to agree or supply missing people and events.
 
-The written principal remains **217** and its discrepancy remains **20**. Calculated paths totaling **237** remain diagnostics. The policy does not replace a principal to minimize faults, make two accounts agree, or manufacture missing personnel/events.
+### P105740: preserve the supported title and operand scope
 
-### P105740 and P204204: keep the source-specific interpretation
+P105740 retains the supported administrator title at `/relations/4/value`, with native form `sza3-[tam]`, for its restored seal owner. The edition's DI[KU5] judge reading remains a credible alternative in the source reasoning. The selection does not create a title taxonomy, assert scholarly consensus or identify the owner with a governor.
 
-P105740 retains the supported administrator title at `/relations/4/value`, native `sza3-[tam]`, for its restored seal owner. The edition's DI[KU5] judge reading remains a credible alternative in source reasoning. P204204 is a separate case: its native `di?-ku5?` already has a queried primary judge interpretation while its coarse canonical code is unclassified. These are not a universal rule that an edition wins or that `unclassified` means unknown content. Neither creates an enum, a title taxonomy, external scholarly-consensus claim or historical identity with a governor.
+The same record preserves the supported arithmetic membership 1+1=2 across tablet and envelope witnesses. That scope does not permit counting the same represented sheep again for each witness.
 
-P105740 also preserves actual arithmetic membership **1+1=2** across tablet/envelope witnesses. That is a supported operand scope, not permission to count the same represented sheep again for each witness.
+### P204204: an unclassified code can still carry an interpretation
 
-## 4. Quantities and dependencies
+P204204 is a different case. Its native `di?-ku5?` already has a queried primary judge interpretation, while its coarse canonical code is unclassified. That code does not mean the content is unknown. Read alongside P105740, it also shows why neither edition priority nor a coarse code can replace the source-specific reasoning.
 
-Numbers are exact rational strings, for example `"1/2"`; null is never zero. Written expressions preserve term order, native units, unknown positions and editorial deletions. A measurement's subject, function, dimension, components, standard, population and time basis are distinct fields.
+## Quantities and calculations
 
-Native vectors keep unit components separate. A standard label does not provide a conversion factor. A rate denominator is not the total population; absent time basis is not “per day.” Relative-work equivalents are not automatically observed hours. No cross-document grand total is computed by the foundation.
+Numbers are exact rational strings, such as `"1/2"`; null is never zero. Written expressions preserve term order, native units, unknown positions and editorial deletions. A measurement's subject, function, dimension, components, standard, population and time basis are distinct fields.
 
-Explicit canonical recipes retain calculation/reconstruction modes and ordered dependencies. An affected derived cache must be recomputed from supported default premises or held null; an old result is not a fresh observation. Complete, partial and unresolved memberships differ. Repeated representations and overlapping operand scopes must not be added twice. The default diagnostics expose recomputation/withholding; preserved cached accounting artifacts are advanced evidence, not advertised as new default consequences.
+A native vector keeps unlike unit components separate. A standard label does not supply a conversion factor. A rate denominator is not the total population, and an absent time basis does not mean “per day.” Relative-work equivalents are not automatically observed hours. The foundation computes no cross-document grand total.
 
-## 5. Three kinds of connection
+Explicit canonical recipes retain their calculation or reconstruction mode and their ordered dependencies. When a default decision changes a premise, an affected derived cache must be recomputed from supported default premises or held null. Its old result is not a fresh observation. Complete, partial and unresolved memberships must remain distinct, and repeated representations or overlapping operand scopes must not be counted twice. Default diagnostics report recomputation and withholding; preserved cached accounting artifacts remain advanced evidence rather than newly established default consequences.
 
-* **Containment:** one JSON object contains another. This is syntax, not identity or automatic semantic inheritance.
-* **Source-local assertion:** participant roles, kinship, title, affiliation, seal ownership, local coreference, membership, summaries and balances. Their endpoints, evidence and scope remain explicit.
-* **Documentary/vocabulary connection:** supporting witnesses, exact shared native terms and controlled concepts. Equality permits retrieval; it does not merge historical people, events, physical goods, standards or instants.
+## Connections and identity
 
-Multi-party assertions stay n-ary objects with typed incidences. Entries are not automatically transactions; mentions are occurrences, not people counts. Local IDs such as `m1` are unique only within the record. Supported source-local kinship/coreference is retained even though later global identity reconstruction is excluded.
+Containment, source-local assertions and documentary connections serve different purposes. JSON containment says that one object is stored inside another; it does not establish historical identity or transfer every property from parent to child.
 
-Default graph connectivity is rebuilt from default object/reference values. A held-null endpoint must not leave an asserted edge to its rejected source value. Candidate branches and historical convention edges remain evidence-only. Stable keys are `(source_id, original record version, pointer)`; node indices are presentation-local. Some source targets may lie under a null default object; the graph reports that disposition rather than inventing an endpoint.
+Source-local assertions include participant roles, kinship, titles, affiliations, seal ownership, local coreference, membership, summaries and balances. Their endpoints, evidence and scope remain explicit. Multi-party assertions remain n-ary objects with typed incidences rather than being reduced to arbitrary pairs. Entries are not necessarily transactions, and mentions are written occurrences rather than counts of historical people.
 
-## 6. Native labels and time
+Documentary and vocabulary connections support retrieval through witnesses, exact shared native terms and controlled concepts. Equality at that level does not merge people, events, physical goods, standards or instants across sources. A local ID such as `m1` is unique only within its record. Supported local kinship and coreference are preserved; later global identity reconstruction is outside this release.
 
-All **98,928 current unclassified relations** have populated source `native_label` values. Those labels remain intact in the preserved canonical evidence, with their precise endpoints and evidence. Default labels remain searchable unless an explicit unresolved branch makes the field null; the original label is then accessible at its evidence pointer. Some are explanatory English labels, not literal Sumerian. The release does not replace them with speculative semantic categories. Fine native item/title/unit distinctions likewise remain accessible beyond coarse enums.
+Default connectivity is rebuilt from default objects and references. An endpoint held null must not leave an asserted edge to its rejected source value. Candidate branches and historical convention edges remain evidence-only. Stable node keys are `(source_id, original record version, pointer)`; node indices are local to a presentation. When a source target lies beneath a null default object, the graph reports that disposition rather than inventing an endpoint.
 
-Calendar formulas, months/days, relative dates, intervals, durations, occurrences and applicability roles stay distinct. A seal ruler, oath ruler, reference year and body date are not automatically one chronological assertion. Equal calendar descriptions do not prove the same historical instant. No absolute chronology or missing date component is invented.
+## Native labels and dates
 
-## 7. Search, scope and evidence
+All 98,928 current unclassified relations have populated source `native_label` values. The preserved canonical evidence retains those labels, their precise endpoints and their evidence. Default labels remain searchable unless an explicit unresolved branch makes the field null; the original is then available at its evidence pointer. Some labels are explanatory English, not literal Sumerian. They are not replaced with speculative categories. Fine distinctions in native items, titles and units likewise remain accessible beyond the coarse enums.
 
-Search is literal, case-insensitive scalar retrieval of the default, not synonym, transliteration or identity normalization. Ordinary scalar search excludes reasoning, qualifications and branch-evidence metadata so an alternative mentioned only in explanatory prose is not returned as an asserted default fact. Explicit evidence inspection remains available when that material is needed.
+Calendar formulas, months and days, relative dates, intervals, durations, occurrences and applicability roles are separate structures. A seal ruler, oath ruler, reference year and body date are not automatically parts of one chronological assertion. Equal calendar descriptions do not establish the same historical instant. The release invents neither an absolute chronology nor missing date components.
 
-Bounded `search_page` work is limited by sources and matches. Preserve the exact cursor; it binds release/query/population and position. An empty page can precede later results. Only `exhausted`/a null next cursor indicates completion. A limited result is not a denominator.
+## Searching and checking evidence
 
-Evidence coordinates bind the exact original SHA, not whichever witness is named registered or canonical. Physical lines are one-based; token and optional Unicode-code-point subtoken bounds are zero-based/end-exclusive. Follow qualifications to reasons and evidence anchors without treating a shared anchor as an independent observation each time it is cited.
+Search performs literal, case-insensitive scalar retrieval over the default. It does not normalize synonyms, transliterations or identities. Ordinary scalar search excludes reasoning, qualifications and branch-evidence metadata, so an alternative mentioned only in explanatory prose is not returned as an asserted default fact. That material remains available through explicit evidence inspection.
 
-Advanced `inspect` is the explicit comparison route; it is not an ordinary second reading. A child that exists only under a restored/default object can have `default_pointer_exists:true` and `evidence_pointer_exists:false`; this does not pretend that an absent raw child was a written null. A pointer absent from both representations still fails. Historical predecessor and documentary-support links distinguish absent historical payloads from available original evidence. These distinctions are detailed in [provenance](PROVENANCE.md).
+`search_page` limits work by sources and matches. Keep its exact cursor: it binds the release, query, population and position. An empty page can precede later matches. Only `exhausted` or a null next cursor establishes completion; a limited result is not a population denominator.
+
+Evidence coordinates bind the exact original SHA, not whichever witness happens to be named registered or canonical. Physical lines are one-based. Token bounds and optional Unicode-code-point subtoken bounds are zero-based and end-exclusive. Qualifications lead to reasons and evidence anchors, but repeated citations of one anchor are not independent observations.
+
+Use advanced `inspect` for an explicit comparison with preserved evidence, not as a second ordinary reading. A child introduced beneath a restored default object can have `default_pointer_exists:true` and `evidence_pointer_exists:false`; an absent raw child is not thereby treated as a written null. A pointer missing from both representations still fails. Historical predecessor references and documentary-support links also distinguish unavailable historical payloads from available original evidence. [Provenance](PROVENANCE.md) explains these cases in more detail.

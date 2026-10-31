@@ -1,47 +1,43 @@
 # Default-value policy
 
-The consumer receives **one default value**, including null, with its qualifications, ambiguity navigation flag and exact evidence pointers. This is not a certainty-only dataset, an edition-priority rule, a dual-reading interface or a general natural-language interpretation service.
+The ordinary interface returns one default value, which may be null, together with its qualifications, ambiguity flags, and exact evidence pointers. This is a practical reading of the source record, not a restriction to certain interpretations. It neither ranks editions automatically nor presents competing readings as two defaults. Alternatives remain available for inspection as evidence.
 
-## Source interpretation and machine proof are different
+## From source judgment to a default
 
-The preserved source record supplies adopted interpretations, qualifications, structured candidate bundles and explanatory reasoning. The bounded policy establishes a default preference only through supported, target-bound rules. A source can express a preference that the machine does not establish; `machine_reason_not_established` reports that distinction without rewriting the source judgment.
+A source record can contain an adopted interpretation, qualifications, structured candidate bundles, and explanatory reasoning. The policy establishes a preference only where a supported rule binds that preference to the relevant target. A source may express a judgment that the machine cannot establish under those rules. `machine_reason_not_established` records that limitation without changing the source's judgment.
 
-For a structured set:
+For a structured alternative set, the policy first resolves the exact qualification targets, option assignments, source and version bindings, and reasoning and evidence pointers. It then evaluates the supported source assertion with attention to its target, polarity, and scope. Negated, hypothetical, rejected, or disputed wording cannot become a positive instruction.
 
-1. Resolve the exact qualification targets, option assignments, source/version binding and reasoning/evidence pointers.
-2. Evaluate the supported source assertion with correct target, polarity and scope. Negated, hypothetical, rejected or disputed wording must not become a positive instruction.
-3. Select a whole justified bundle, including a justified retain-current choice. Singleton count, option order and a coarse support label alone are not proof.
-4. Require supported dependencies and coherent overlapping assignments. Unproved dependencies, conflicts, cycles and unresolved joint worlds fail closed.
-5. If no preference is established, make the affected default targets null and retain null cause, branch/qualification pointers and source evidence. Do not null unrelated fields sharing a reason.
+Selection applies to a whole justified bundle, including a justified choice to retain the current value. Neither a singleton option nor its order or coarse support label establishes preference. Dependencies must be supported, and overlapping assignments must be coherent. Unproved dependencies, conflicts, cycles, and unresolved joint worlds fail closed. Where no preference is established, the affected default targets become null, with their null cause, branch and qualification pointers, and source evidence retained. Unrelated fields are not nulled merely because they share a reason.
 
-Additional ambiguous source qualifications can generate scoped `source_qualified_not_machine_resolved` annotations. These have `is_identified_branch:false`/`annotation_kind:qualification`, not newly proved branches or wholesale-null instructions. `has_branches` counts only identified choices; `has_ambiguity` separately reports scoped annotations/uncertainty. Wider prose signals are explicitly incomplete review material, not fabricated options.
+Other ambiguous source qualifications can produce scoped `source_qualified_not_machine_resolved` annotations. These carry `is_identified_branch:false` and `annotation_kind:qualification`: they are not newly established branches or instructions to null a whole record. `has_branches` refers only to identified choices, while `has_ambiguity` also reports scoped annotations and uncertainty. Wider prose signals are incomplete review material, not inferred options.
 
-## Supported evidence routes
+## Evidence that can establish a preference
 
-The bounded reasoning route handles particular explicit source assertions, corrected numerals, retained primary titles and limited affirmative restoration forms. It is not an unrestricted classifier of every mention, office, institution or activity. Source IDs bind provenance, not selection preference; there is no manually curated source-ID choice whitelist in the portable reader.
+The bounded reasoning route recognizes particular explicit source assertions, corrected numerals, retained primary titles, and limited affirmative restoration forms. It is not a general classifier for every mention, office, institution, or activity. Source IDs identify provenance rather than preference; the portable reader contains no manually curated source-ID choice whitelist.
 
-The separately labelled numeric-anchor route verifies **existing branch assignments** against their existing term-owned evidence, exact original SHA/byte count and supported single-token numeric spans. It does not extract new candidates from the text. Opaque, queried/damaged, mismatching, contradictory or unsupported anchors abstain. Exact rational arithmetic and declared count/unit handling are used; no metrological conversion is invented.
+A separate numeric-anchor route verifies existing branch assignments against their existing term-owned evidence. It checks the exact original SHA and byte count and supports single-token numeric spans. It does not extract new candidates from the text. Opaque, queried or damaged, mismatching, contradictory, and unsupported anchors lead to abstention. The route uses exact rational arithmetic and declared count and unit handling, without inventing metrological conversions.
 
-Complete count recipes can use independently verified inputs and exact encoded membership. Repeated documentary witnesses, overlapping leaves and unproved operands are not independent contributions. A desired total cannot prove its own input restorations.
+Complete count recipes may use independently verified inputs and exact encoded membership. Repeated documentary witnesses, overlapping leaves, and unproved operands do not count as independent contributions. A desired total cannot establish the restorations of its own inputs.
 
-## Values, caches and nulls
+## Values, derived results, and nulls
 
-Nonbranch source-adopted values remain the default unless an applicable reviewed policy operation changes them. Original source nulls, empty fields and optional absence retain their distinctions. A selected reading can still have restoration/query marks and substantive qualifications.
+Nonbranch source-adopted values remain the default unless an applicable reviewed policy operation changes them. Original nulls, empty fields, and optional absence remain distinct. A selected reading may still bear restoration or query marks and substantive qualifications.
 
-Affected explicit recipes are re-evaluated from supported default premises. If evaluation cannot be established, the affected derived result is null with diagnostics, not a stale cache masquerading as a computation. Unrelated caches are preserved; native-standard/unit evidence stays scoped to its own quantity. Written/adopted principals are not changed to force accounts to balance.
+When a default changes the premises of an explicit recipe, the affected result is re-evaluated from supported default premises. If the evaluation cannot be established, that result becomes null with diagnostics rather than retaining a stale cache as an apparent computation. Unrelated caches remain unchanged. Native-standard and unit evidence stays attached to its own quantity, and written or adopted principals are not changed to make accounts balance.
 
-An actual source field under a null default ancestor is reported by `research_value` as an annotated null, including the ancestor pointer. An invalid/misspelled source pointer still fails. Ordinary strict `pointer` traversal may fail beneath null; this is why the annotation-bearing accessor is preferred for field use.
+For field access, `research_value` reports an actual source field beneath a null default ancestor as an annotated null, including the ancestor pointer. An invalid or misspelled source pointer still fails. Strict `pointer` traversal may fail beneath null; the annotation-bearing accessor is therefore preferable when inspecting fields.
 
-## Concrete behavior
+## Examples of the rules
 
-* **P102673:** supported restored counts 1,1,2,2 and encoded schedule177 are usable defaults. Written217 and discrepancy20 remain unchanged. Calculated237 remains diagnostic.
-* **P105740:** administrator remains the supported interpretation; judge is a credible edition alternative retained in evidence, not an automatic replacement.
-* **P204204:** its own retained primary queried judge reading remains distinguishable from its coarse unclassified code. No new semantic enum or historical identity is created.
+In `P102673`, supported restored counts **1,1,2,2** and encoded schedule **177** are usable defaults. Written **217** and discrepancy **20** remain unchanged, while calculated **237** remains diagnostic. The policy does not resolve the discrepancy by altering the written amount.
 
-These cases test generic rules and data bindings, not permission to prefer any restoration or to classify every native relation. Native labels remain intact/searchable. The release performs no speculative semantic relation reclassification, global person/event merging, absolute chronology or arbitrary unit conversion.
+In `P105740`, administrator remains the supported interpretation. Judge is retained as a credible edition alternative, not promoted automatically. `P204204` has its own retained primary queried judge reading, which remains distinguishable from its coarse unclassified code. Neither example creates a new semantic enum or historical identity.
 
-## Delivery and audit
+These cases test generic rules and data bindings. They do not authorize a preference for every restoration or classification of every native relation. Native labels remain intact in the preserved evidence and searchable in the ordinary default unless explicitly held null. The release performs no speculative semantic relation reclassification, global person or event merging, absolute chronology, or arbitrary unit conversion.
 
-`data/default_records/` materializes the outcome so a consumer needs only the portable standard-library reader. Record/default hashes and a policy fingerprint bind the result; query-time code does not select a different reading. Candidates, original values and explanations are available only through explicit advanced evidence/inspection, not as a second default panel.
+## Materialization and audit
 
-Coverage counts and the actual frozen test inventory are in [validation](VALIDATION.md). Source-level review/holds and the specific author-self-check authority remain in [provenance](PROVENANCE.md); default selection adds zero independent scientific review credit and clears no hold.
+The outcomes are materialized under `data/default_records/`, so consumers need only the portable standard-library reader. Record and default hashes, together with a policy fingerprint, bind the result. Query-time code does not choose a different reading. Candidates, original values, and explanations require explicit advanced evidence access or inspection; they are not a second default panel.
+
+[Validation](VALIDATION.md) gives the coverage counts and frozen test inventory. [Provenance](PROVENANCE.md) explains source-level review, holds, and the specific author-self-check authority. Default selection confers no independent scientific review credit and clears no hold.

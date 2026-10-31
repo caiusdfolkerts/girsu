@@ -1,75 +1,103 @@
-# Girsu source graph
+# Girsu
 
-An application-independent data foundation for Girsu source records: structured documentary content, source-local relationships, exact evidence and provenance, with a portable read-only Python reader.
+Girsu makes a substantial corpus of ancient history usable in code. We have accounted for all 19,208 text-bearing Girsu sources in our catalogue and produced 18,409 current structured interpretations, containing 172,723 entries and 171,251 explicit relation objects. The release brings those interpretations, their source texts and their evidence together with a standalone Python reader.
 
-**Ordinary access returns one default reading. Its value can be `null`.** Ambiguity, applicable qualifications and exact evidence pointers accompany that reading; consumers do not have to choose between two parallel records. Exact original text and preserved canonical records remain available through explicitly advanced evidence access. No later global identity reconstruction is included.
+The achievement is document-level understanding represented as data. Girsu records who is involved, what is being counted or transferred, how entries relate, which totals include which details, and what supports each interpretation. Researchers can search the collection, assemble dossiers and analyse these relationships computationally, then follow a result back to the exact passage and reasoning behind it.
 
-## Quick start
+That changes the starting point for historical research. The work of interpreting a source becomes a reusable resource across investigations, rather than something that has to be rebuilt for each new question. This repository is the product of that method.
 
-Use **Python 3.11+**, with no third-party packages, database server, network service or old workspace required. Run from the directory containing `girsu.py`, `data/` and `MANIFEST.json`:
+## The agentic pipeline
+
+A shared task queue distributed source work across parallel interpretation agents and a separate reviewer pool. The queue tracked the source being worked on and the version submitted for review, so parallelism did not mean untracked edits to the same record. Interpretation and review could proceed on different sources at the same time.
+
+```mermaid
+flowchart TD
+    A[Source registry and task queue] --> B[Parallel interpretation agents]
+    B --> C[Structured record and exact evidence]
+    C --> D[Programmatic validation]
+    D -->|Problems found| B
+    D --> E[Separate reviewing agents]
+    E -->|Corrections required| B
+    E -->|Accepted version| F[Versioned canonical records]
+    F --> G[Graph assembly and default selection]
+    G --> H[Validation and private release]
+```
+
+The diagram shows the standard review route. A defined cohort of 623 sources used an authorised author-self-check route; the per-record history preserves that distinction. Corrections produced new versions, and the graph was assembled from explicitly selected record versions. The released repository contains the result and its scientific provenance, without requiring the task system that produced it.
+
+## The interpretation method
+
+We used AI agents to read individual sources into a common record structure. The task was to interpret the whole supplied text, including its closing clauses, seals and envelopes, and record what its statements mean. Code provided stable identifiers, exact evidence coordinates, structural checks and graph assembly. A separate agent-review workflow checked interpretations against the bound source and returned corrections. Each record retains its authorship, review decisions and interpretive history. The methods and provenance documents explain the review process and its recorded exceptions.
+
+The resulting record contains much more than a transcription with names and numbers attached. It distinguishes a recipient from a witness, a quantity from a rate, a written total from a calculated check, and a person mentioned in a seal from a person participating in an entry. It records which details a subtotal includes, where a date applies, and when two parts of a document represent the same material. Interpretive alternatives have explicit targets and reasons.
+
+Every such statement can be traced to the exact version of its source. The text, its structured interpretation and the default used for analysis are preserved separately. That makes it possible to improve an interpretation without losing the evidence from which it was made.
+
+The [method](docs/METHODS.md) describes this process in full, from source selection through interpretation, review and assembly.
+
+## What this lets you do
+
+The collection can be queried by documentary content: commodities, quantities, people as written occurrences, institutions, places, dates, roles and relationships. Results retain the source and field that produced them. You can move from a corpus-wide search to a particular assertion and then to the passage and reasoning that support it.
+
+Consider an account with detailed entries and a total. A useful representation must say which measurements belong to that total. Otherwise a program can find all the numbers but cannot know what to add. Likewise, a tablet and its envelope may describe the same goods. Counting each representation as a new delivery would change the history. In P105740, the record makes the membership of the two one-sheep details in the two-sheep total explicit and preserves the documentary relationship between the witnesses.
+
+This is the work the graph makes reusable. It exposes the interpretation of a document in a form that can be checked and manipulated, while keeping its scope. It does not resolve all people with similar names into global identities or declare that every pair of related documents records one transaction. Those are research questions to pursue over the records.
+
+The current canonical records contain 172,723 entries, 149,429 mentions, 171,251 relation objects and 165,959 measurements. They also contain 251,231 qualifications and 246,756 reasoning objects. These counts describe the preserved records, not distinct historical events or people.
+
+## One default reading
+
+Ordinary queries use one consistent reading of each record. The default policy selects a branch when its implemented rules establish a supported preference; otherwise it holds the affected target null. Results retain the applicable qualifications and pointers to explanations and alternatives.
+
+The evidence is never deleted to make this view simpler. Restored readings retain their marks and justification. Disputed names remain disputed. A written total is not changed merely because a different number would make an account balance. The [default policy](docs/DEFAULT_POLICY.md) explains the implemented rules and their scope.
+
+All record, search and graph methods use this same default. Explicit evidence methods let you inspect the preserved canonical interpretation and original text when you need to examine a decision.
+
+## Start using it
+
+Clone the private repository using an account with access. The reader requires Python 3.11 or later and only the standard library. It needs no database server, external service or original production workspace.
 
 ```sh
+git clone https://github.com/caiusdfolkerts/girsu.git
+cd girsu
 python girsu.py verify
 python girsu.py record P105740
-python girsu.py research P102673 /entries/21/measurements/0/adopted
-python girsu.py pointer P105740 /entries/2/membership
-python girsu.py neighbours P105740 /entries/2/membership
-python girsu.py search P100144 metrological_standard
-python girsu.py search-page metrological_standard --source-limit 25 --limit 20
 ```
+
+From Python, open a record or inspect a particular field with its evidence and qualifications:
 
 ```python
 from girsu import Graph
 
-g = Graph()                       # or Graph('/path/to/release')
-record = g.record('P105740')       # the same default used by search and graph access
-field = g.research_value('P102673', '/entries/21/measurements/0/adopted')
-print(field['value'])             # one value, including null when held
-print(field['has_branches'])      # identified choice set only
-print(field['has_ambiguity'])     # broader scoped annotation/uncertainty warning
-print(field['qualifications'])
-print(field['branches'])          # labelled branch OR qualification annotations
+g = Graph()
+record = g.record("P105740")
+
+field = g.research_value("P105740", "/entries/2/membership")
+print(field["value"])
+print(field["qualifications"])
+print(field["branches"])
 ```
 
-`research_value` is the annotation-bearing field accessor; `research` returns the same default record with context. It can report a valid source field beneath a held-null parent as `value_status='null_due_to_unresolved_ancestor'`, with its ancestor pointer and evidence. `pointer` is strict traversal and may fail beneath that null parent; use the annotated accessor for such fields. A null is not zero and must not be replaced with a candidate from a different API. See [semantics](docs/SEMANTICS.md).
+The [query guide](docs/COOKBOOK.md) shows how to retrieve documents, dates, institution mentions, commodities, native relations and personal occurrences, and how to export the results without losing provenance. The [data dictionary](docs/DATA_DICTIONARY.md) describes the record structure. [Reading the graph](docs/SEMANTICS.md) explains quantities, nulls, dates, identity and documentary scope.
 
-For a detached record stream, use `g.iter_records()`; each envelope contains `record` plus source-level context. Use `research_value` when field-applicable qualifications are needed. In the preserved `branches` annotation list, `is_identified_branch`/`annotation_kind` distinguish real choice sets from qualification-only context. Neither boolean flag is a probability or completeness certificate.
+## The corpus
 
-For bounded corpus search, pass the returned `next_cursor` unchanged to `search_page`. **An empty page need not mean completion:** check `exhausted`; a completed search has no next cursor. A page or `--limit` is not a corpus count. `search_all` streams the complete default population when an unrestricted scan is wanted.
+Girsu was a Sumerian city at modern Tello in southern Iraq. It belonged to the state of Lagash, whose name can also refer to a separate city at modern al-Hiba. The principal setting of this collection is the Ur III period, the Third Dynasty of Ur, broadly the twenty-first century BCE.
 
-## What is preserved
+The surviving documents show administrative life at close range: receipts, accounts, expenditure, workforces, inventories, legal matters and correspondence. They describe people acting in institutional roles, the movement and allocation of goods, and the recording of responsibility. They are especially valuable for studying how administration worked because they preserve individual entries and decisions rather than only royal accounts of government.
 
-| Holding | Count |
-|---|---:|
-| Registered textual sources | 19,208 |
-| Catalogue-only IDs without saved ATF | 11,048 |
-| Documentary universe | 30,256 |
-| Selected canonical source records | 18,412 |
-| Current source records, included by default | 18,409 |
-| Explicit archival-only selected records | 3 |
-| Stored original-text witness rows | 38,046 |
+In this release, 8,979 current records are classified as accounts, 3,494 as receipts and 1,090 as expenditure. There are also personnel lists, inventories, legal records and letters. Other records retain a less specific or unresolved genre. A site's administrative corpus is not one institution's archive, and a place mentioned inside a text is not necessarily where that text originated.
 
-Witness rows are not necessarily distinct texts: 17,969 registered/canonical pairs are byte-identical. One source can contain tablet, envelope and seal parts. Source IDs, physical witnesses, mentions and historical people are different counting units.
+## Where the texts came from
 
-The preserved current canonical evidence contains 172,723 entries, 149,429 mentions, 171,251 relations, 165,959 measurements and 872,362 evidence anchors. These are **source-evidence counts**, not a census of populated fields after default nulling. The source covers accounts, receipts, expenditure, personnel lists, inventories, legal records, letters, seal/royal representations and other/unsettled genres.
+The project's upstream acquisition code records a collection assembled from CDLI catalogue data and scholarly transliterations. The Girsu corpus was reconciled against a preserved catalogue export by its Girsu site-group field. It contains 30,256 catalogue IDs: 19,208 with saved ATF text and 11,048 without it. The latter are retained as a documentary appendix, not represented as interpreted texts.
 
-All **98,928 current unclassified relations retain their populated `native_label` in the preserved canonical evidence**. Default labels are searchable unless an explicit unresolved branch makes that field null; in that case the original label remains accessible at its evidence pointer. No speculative relation taxonomy has been imposed. Some labels are explanatory English, not verbatim Sumerian. Native temporal formulas are preserved without fabricating absolute chronology. Quantities use exact rational strings and native units, without arbitrary conversions.
+CDLI is the Cuneiform Digital Library Initiative. BDTNS, the Database of Neo-Sumerian Texts, is a closely related scholarly resource and part of the editorial setting of this material; the project also used it for a limited earlier comparison. BDTNS was not the direct download source for the whole release. ATF is the transliteration format, not a separate ancient archive. These distinctions, the acquisition evidence and the underlying scholarly work are explained in [Sources](docs/SOURCES.md).
 
-## One default, common checks
+There are 18,409 current canonical records and three explicitly archival records. The remaining registered sources retain their documented dispositions. This is a defined digital corpus with recorded coverage, not a claim to possess every surviving Girsu text or to have interpreted every catalogue entry.
 
-* P102673's supported restored counts are **1,1,2,2**, with conditional schedule **177**. Written principal **217** and discrepancy **20** stay unchanged; calculated **237** is diagnostic, not a replacement chosen to balance an account.
-* P105740 retains **administrator** as the supported title interpretation, with its judge alternative available in evidence. P204204 is a different source whose primary queried title is judge. No new `judge` enum or cross-source identity is invented.
-* An unresolved structured choice can yield null without claiming the ancient source has no preference. The bounded machine policy does not interpret all prose meaning.
+## Checking and extending the work
 
-The structured-set pass inspected 3,537 sets: 26 typed selections and one additional bounded prose selection; 3,511 typed sets were held. Thirteen selections used exact evidence-anchor verification and fourteen used source-record reasoning alone. A further 10,601 source-qualified-not-machine-resolved annotations preserve context, not additional proven branches. The separate 9,512-item prose-signal queue is **not** 9,512 proven branches or additional adopted readings. Details and test scope are in [validation](docs/VALIDATION.md).
+The source texts and canonical record bytes are preserved with hashes. The release manifest binds the files, and the tests exercise the reader's default selection, evidence access, searches and graph behaviour. The original release passed 27 consumer and query-example tests, alongside independent preservation and package audits. [Validation](docs/VALIDATION.md) explains what those checks establish, and [Provenance](docs/PROVENANCE.md) records the populations, version history and review distinctions.
 
-## Files and access
-
-* `data/default_records/`: precomputed, hash-checked default records and field-context metadata; no interpretation engine is needed at query time.
-* `data/records/`, `originals/`, `sources/`: exact canonical strings, exact original bytes and scientific provenance.
-* `data/catalogue/`, `availability/`, `aliases/`, `admission/`: documentary coverage and retained bindings.
-* `data/graph/`: preserved assembled evidence, including conditional accounting, temporal, alternatives and documentary-support structures. Default graph access rebuilds from the same default values; historical cached consequences are not falsely described as recomputed defaults.
-
-Compressed JSONL partitions, source indexes, manifests, RFC6901 pointers and SHA-256 bindings are portable; no SQLite file is shipped. Stable addresses use source ID, original record-version hash and pointer. Graph row/node ordinals are not stable identifiers.
-
-Advanced evidence access is explicit: `evidence_record`, `evidence_record_bytes`, `evidence_original`, `evidence_connected`, `evidence_proofs`, and `inspect`. `version_hash` identifies the original canonical bytes, **not** the derived default serialization; defaults have their own `default_record_sha256` and policy fingerprint. See [data dictionary](docs/DATA_DICTIONARY.md), [default policy](docs/DEFAULT_POLICY.md), [provenance](docs/PROVENANCE.md) and [validation](docs/VALIDATION.md). The small [query cookbook](docs/COOKBOOK.md) demonstrates generic field/occurrence retrieval, not a research classification system.
+Girsu provides the interpreted source layer for a research programme: a collection that can be searched systematically, investigated at the level of individual claims, and extended through new historical work.

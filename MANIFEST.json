@@ -11,8 +11,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 7410,
-      "sha256": "af45e6aa42c40c201d87b9d9fc722398d5025e2ba36ae7643788436822a00860"
+      "bytes": 10377,
+      "sha256": "ae2a5553924587d3e37c6d5aed20d64beec2a6cc98b6c25de091d420d140d0b2"
     },
     {
       "path": "data/CONSUMER_VALIDATION.json",
@@ -2831,33 +2831,43 @@
     },
     {
       "path": "docs/COOKBOOK.md",
-      "bytes": 5489,
-      "sha256": "014c7823ed5412ded05b76c82dcf14ebe8fed6e05eb98c326501590e547a9e62"
+      "bytes": 5913,
+      "sha256": "f1e7353888008dc7e698753361138e66ef99f4c12466597f68ae52974ea7bf6d"
     },
     {
       "path": "docs/DATA_DICTIONARY.md",
-      "bytes": 28838,
-      "sha256": "7c83c6df8d89c215c7cb28e8979daa3ced63b0424e13279d2a8320d2b44ccf32"
+      "bytes": 28552,
+      "sha256": "aa6f8f5270c42b419f29d13c6cc3136d328ce0c97d31b10c954a21d541c35538"
     },
     {
       "path": "docs/DEFAULT_POLICY.md",
-      "bytes": 5719,
-      "sha256": "744db58bd77f46270125a7345c035535d8ffca42b5b877a5a77668d550da2e32"
+      "bytes": 6372,
+      "sha256": "be08b44e1f5171e38248026b253b8bc894598a841e0b51d6e85433b59bb90ebc"
+    },
+    {
+      "path": "docs/METHODS.md",
+      "bytes": 17702,
+      "sha256": "0fd1df182316b748614f5d07ca6bd6db2d842f5c67676da2ee1c8efabf3dc956"
     },
     {
       "path": "docs/PROVENANCE.md",
-      "bytes": 17020,
-      "sha256": "7551b039b2ebbad8634d743a9c085ca094aa783e7736ed307544e0e7b338d89e"
+      "bytes": 17182,
+      "sha256": "32cb78687226d8ba948c1997650b01876d8ab078085e4185480ef8a3139839ba"
     },
     {
       "path": "docs/SEMANTICS.md",
-      "bytes": 11200,
-      "sha256": "948a84c60527dec420fe77c2a8120007c79c15d3036c54f664b388551ef99b43"
+      "bytes": 11953,
+      "sha256": "19d8a149ba47d5460482b169f095a4bafa34d916181717c0d0dac60ebf9fbfce"
+    },
+    {
+      "path": "docs/SOURCES.md",
+      "bytes": 11307,
+      "sha256": "d656f8254859b19482ca0a0d772457548919a297ac1f3f4f058daeb60bd97ab4"
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 9503,
-      "sha256": "ddb7c687eb16a2712011a0696bd29e3e9f698a6d2425b573490e37b8708effb7"
+      "bytes": 10269,
+      "sha256": "4a4be2f858560d328a890338b3690166913eb2fa8d7315130672b6c03ae248a7"
     },
     {
       "path": "docs/schema/ACCOUNT_VALUE_CONVENTIONS_V1.md",
@@ -2935,7 +2945,7 @@
       "sha256": "9897a0f473b7fdea4f7425404bc2e476169a380766523d4b504643312cb40ee6"
     }
   ],
-  "total_bytes_excluding_manifest": 266345451,
+  "total_bytes_excluding_manifest": 266379899,
   "max_file_bytes": 3076169,
   "identity_resolution_included": false,
   "build_tools_included": false,

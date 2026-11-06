@@ -1,19 +1,35 @@
-# Reconstructing Ur III
+# Ur III
 
-The Ur III sumerian administration that governed southern Mesopotamia from 2112-2004 BCE was one of the most beaurocratic states of human history. Over 108 years and across 23 core provinces, archeology has recovered 120,000 Ur III administrative tablets and related documents. 
+I'm trying to reconstruct Ur III from cuneiform accounting tablets. This is work in progress. If you want to help, contact me!
 
-The majority (~77% of BDTNS) of these texts come from three archeological sites: Girsu (Tello, Iraq), Umma (Tell Jokha, Iraq) and Puzriš-Dagān (Drehem, Iraq). Ur III was first discovered in 1853 by John George Taylor, who investigated Tell el-Muqayyar and uncovered the first Ur transcriptions. Arguably (and geographically) the centre of the Ur III administration, and the first to be discovered is Girsu, where Ernest de Sarvec discovered 30,000 administrative tablets in 1894. 
+## Some background
 
-Historians have been studying trying to reconstruct the economic and administrative practices of Ur III by studying administrative tablets since de Sarvec's first discovery. Tablets are distributed accross museums and private collections, with many at the British Museum and the Louvre, and are written in cuneiform. Thanks to the tremendous research effort of thousands of assyriologists over the last century and a half, the majority of Ur III administrative records have been transcribed. Since 2013, they have been digitised and collected by the BDTNS project. 
+First of all, here's some history:
+
+During and following the decline of the Akkadian empire around 2200-2150BCE, Southern Mesopotamia was left politically fragmented, and around 2112 BCE a leader called Ur-Nammu established a dynasty at  Ur. It's generally talked about as the Third Ur Dynasty, or Ur III, since it follows the first Ur city-state that was ruled by the First Ur Dynasty, and the Second Ur Dynasty about which almost nothing is known. Ur-Nammu ruled for 18 years until his death in 2095 BCE, and during his lifetime he was successful in reuniting the city states of Southern Mesopotamia under Ur rule. He also commissioned one of the world's first law codes, 300 years before Hammurabi, and built the Great Ziggurat, a massive stepped temple complex the remains of which remain today. 
+
+Ur-Nammu's son, Shulgi, ruled for 48 years after Ur-Nammu's death from 2094-2047 BCE. Shulgi's great innovation was to standardise the systems used for accounting and measure. During Shulgi's rule, Ur established uniform units of measurement (one *sila* was roughly a litre of grain, and one *gur* was 300 sila). Just as importantly, systems for tracking goods, labour and inventories, and accounting were standardised. The accounting system of Ur moved from consisting mostly of receipts of individual transactions or agreements, the accounting systems under Shulgi brought together transactions over months or years, calculating the total resources entrusted to an institution / official, subtracting total expenditures, and recording the outstanding balance. These remaining balances were increasingly carried forward into subsequent accounting periods. 
+
+This accounting system meant that the kings of Ur could organise large parts of the economy. The kingdom was divided into roughly 20-22 core provinces, each of which had a governor (the *ensi*) who ran local institutions and was responsible for meeting the obligations to the royal government. Provinces were assigned quotas of goods and labour to contribute from the royal government based on their economic capacity, and these contributions were collected at royal distribution centres to be redistributed to the institutions that needed them.  
+
+But to make all this work took an incredible accounting effort. Every delivery, transfer, or assignment was recorded by scribes on a small clay tablet. Foremen would report to accountants with the total workmen-days and the work completed. Many of these tablets were then enclosed in a second layer of clay forming an envelope. These records were then sent to provincial administrative offices, and some to the royal capital, for verification and accounting, and here individual receipts were aggregated into monthly or annual accounts showing how much an institution/individual had spent, received, and still owed relative to their obligations. Deficits were carried forward into the next accounting cycle. Then in aggregate, these accounts showed provincial governers whether or not they were meeting their obligation to the royal government, while the royal government could track contributions from the provinces and coordinate the redistribution of resources across the kingdom.
+
+Ur III was first discovered in 1853 by John George Taylor, who uncovered the first Ur tablets when investigating Tell el-Muqayyar. Over the roughly 108 year lifespan of Ur III, we've recovered over 120,000 Ur III administrative tablets and other documents. Most (~77% of BDTNS) of these texts come from three main archeological sites: Girsu, which was the administrative centre of the wealthy Lagash province, Umma, which was the capital of the Umma province, and Puzriš-Dagān, which was a royal administrative centre established under Shulgi for livestock.
+
+Thanks to the tremendous research effort of generations of assyriologists, we have transliterations for around 75,000 Ur III administrative tablets. Almost all of these transliterations have been digitised by the BDTNS project. 
+
+
+
+## What I'm working on
 
 Individual tablets 
 But to do research and learn about Ur III, the problem is to intepret these sources, There are only a few hundred researchers alive today who can interpret individual sources and thus do productive research on BDTNS.
 
 To do this requires training in cuneiform, and experience with the texts. Using AI (a mixture of gpt-5.6 sol, gpt-6.1 sol and gpt-6 astra were used) this project uses AI to interpret all 19,000 Drehem texts, and put them into a canonical format, describing participants, their relationships. This opens the doors to a whole new category of assyriology research, where we can now work over these structured intepretation documents and the relationships between them quickly and efficiently, rather than spending years reconstructing individual source texts.
 
-We are expanding this method; this project will soon contain canonical records for all non-ATF sources across BDTNS. I am currently expanding source coverage to include Puzriš-Dagān, I plan to make the agent harness that was used in the development of this project open source so that anyone can make contributions as we expand progres. 
+We are expanding this method; this project will soon contain canonical records for all non-ATF sources across BDTNS. I am currently expanding source coverage to include Puzriš-Dagān, . 
 
-## The agentic pipeline
+## How I'm doing it
 
 A shared task queue distributed source work across parallel interpretation agents and a separate reviewer pool. The queue tracked the source being worked on and the version submitted for review, so parallelism did not mean untracked edits to the same record. Interpretation and review could proceed on different sources at the same time.
 
@@ -42,7 +58,7 @@ Every such statement can be traced to the exact version of its source. The text,
 
 The [method](docs/METHODS.md) describes this process in full, from source selection through interpretation, review and assembly.
 
-## What this lets you do
+## What can you do with it
 
 The collection can be queried by documentary content: commodities, quantities, people as written occurrences, institutions, places, dates, roles and relationships. Results retain the source and field that produced them. You can move from a corpus-wide search to a particular assertion and then to the passage and reasoning that support it.
 
@@ -52,13 +68,6 @@ This is the work the graph makes reusable. It exposes the interpretation of a do
 
 The current canonical records contain 172,723 entries, 149,429 mentions, 171,251 relation objects and 165,959 measurements. They also contain 251,231 qualifications and 246,756 reasoning objects. These counts describe the preserved records, not distinct historical events or people.
 
-## One default reading
-
-Ordinary queries use one consistent reading of each record. The default policy selects a branch when its implemented rules establish a supported preference; otherwise it holds the affected target null. Results retain the applicable qualifications and pointers to explanations and alternatives.
-
-The evidence is never deleted to make this view simpler. Restored readings retain their marks and justification. Disputed names remain disputed. A written total is not changed merely because a different number would make an account balance. The [default policy](docs/DEFAULT_POLICY.md) explains the implemented rules and their scope.
-
-All record, search and graph methods use this same default. Explicit evidence methods let you inspect the preserved canonical interpretation and original text when you need to examine a decision.
 
 ## Start using it
 

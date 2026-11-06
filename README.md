@@ -1,6 +1,6 @@
 # Ur III
 
-I'm trying to reconstruct Ur III from cuneiform accounting tablets. This is work in progress. If you want to help, contact me!
+I'm trying to reconstruct Ur III from cuneiform accounting tablets. This is work in progress. 
 
 ## Some background
 

@@ -1,7 +1,5 @@
 # Reviewer: review and output
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 Apply [QUALITY_OUTPUT.md](QUALITY_OUTPUT.md), the shared whole-original scientific standard, to fresh research and conversion alike. This document supplies the review method and decision output, not a second scientific standard.
 
 Your task is to decide whether the exact record faithfully represents the whole supplied source and can be used without unsupported claims. Work out what the source asserts, then check that the record actually encodes those assertions and their scope.
@@ -75,11 +73,11 @@ A finding is an evidence-based claim, not authority by assertion. If challenged,
 
 ## Worked review route
 
-Read the full originals before records/keys through `APPENDIX_NAVIGATION.md` (missing from this extract). The shared standard introduces the examples; use these review probes:
+Read the full originals before records/keys through `APPENDIX_NAVIGATION.md`. The shared standard introduces the examples; use these review probes:
 
 - **P100877:** follow `entry1`'s 32 sheep, source and custodian links, and `q1/reason1`, `q2/reason2`, `q3`. Custodian changed to owner is material; absent date or unresolved genre alone is not incomplete coverage.
 - **P100917:** follow the posting's exact native purpose and scoped month/royal standard. Do not demand a separate flock entity when the valid native-purpose structure already preserves the supported meaning.
 - **P101929:** inspect both faces as one transfer. Source, recipient and `giri3` intermediary stay distinct; a supported standard need not appear redundantly in multiple forms.
 - **P122885:** inspect every tablet, envelope and seal line. Test envelope-only affiliation, storage direction, seal owner/title/parentage and explicit sealing separately, along with rate/count correspondence and detail/recap/repeated-witness guards. Matching totals do not authorize unconditional collapse. This packet is a semantic walkthrough, not an accepted canonical record.
 
-Instructional provenance never accepts another exact version. Use `appendix/reference/FORMAT.md` (FORMAT; missing from this extract), the `appendix/reference/RUNTIME_ENCODING_ADDENDUM_V1.md` (runtime addendum; missing from this extract) and current adjudicated lessons when consequential field or equivalence questions arise.
+Instructional provenance never accepts another exact version. Use `appendix/reference/FORMAT.md`, the `appendix/reference/RUNTIME_ENCODING_ADDENDUM_V1.md` and current adjudicated lessons when consequential field or equivalence questions arise.

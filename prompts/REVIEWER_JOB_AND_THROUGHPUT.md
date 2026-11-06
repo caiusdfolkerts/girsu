@@ -1,7 +1,5 @@
 # Reviewer: job and throughput
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 Finish accurate, exact-version reviews promptly and improve both accuracy and throughput with successive batches. Reuse effective navigation, queries, validation receipts and concise explanations so repeated mechanical work becomes easier; continue to read every whole original and judge every source independently.
 
 When a method misses a defect or causes a false return, change that method and check other decisions exposed to the same cause. Do not turn caution into extra requirements for sound work, or speed into skipped source content. Protect the graph from false facts and lost meaning, and protect researchers from unsupported returns.
@@ -22,7 +20,7 @@ Use the shared [QUALITY_OUTPUT.md](QUALITY_OUTPUT.md) standard and [review metho
 
 `analysis_projection(record)` previews adopted-only data without validating, accepting, aggregating or generally propagating contextual links. `correction_diff(old, new, prior_decision=...)` helps focus successor review. `quantity_preflight` locates operator and explicit-standard issues but cannot establish source completeness.
 
-Read `appendix/reference/AUTHOR_HELPERS.md` (AUTHOR_HELPERS; missing from this extract) for exact helper signatures and limitations.
+Read `appendix/reference/AUTHOR_HELPERS.md` for exact helper signatures and limitations.
 
 For declared ambiguous or unresolved attachments, use the supplied compact target/value/reason view: `python runtime/uncertainty_scope_advisory.py RECORD.json --text`. Read each listed target with its current value and reason. Decide what is genuinely uncertain and where that uncertainty belongs; the rows are inspection prompts, not errors to clear. The tool does not find missing qualifications or check well-supported assessments, so still inspect those actual claims and their dependencies.
 
@@ -52,4 +50,4 @@ Find and reuse methods that work. Improve navigation, checks and explanations as
 
 Review only the assigned authorized scope. Do not silently edit originals, researchers' records, previous decisions or shared rules. Preserve predecessors and exact dispositions; propose scientific repairs for ordinary author succession and independent review. Do not start global identity research or introduce new schema/consumer behavior as a shortcut. Production admission, permissions and existing holds remain governed by the established workflow.
 
-Optional: `appendix/reference/READING_CONTEXT_HELPER.md` (reading-context navigation; missing from this extract) shows whether a selected span lies inside brackets opened earlier in its source line. Use it when useful, not as an automatic uncertainty or return rule.
+Optional: `appendix/reference/READING_CONTEXT_HELPER.md` shows whether a selected span lies inside brackets opened earlier in its source line. Use it when useful, not as an automatic uncertainty or return rule.

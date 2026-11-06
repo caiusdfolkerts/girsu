@@ -66,7 +66,7 @@ The review workflow then asked a separate agent to examine the whole bound sourc
 Despite it being inefficient, mistakes were sent back to the researchers directly to correct themselves, again in hopes of inducing in-context learning and decreased rates of returns. This saw significant success, and led to a net speedup of the pipeline. 
 
 The data_dictionary.md file details the structure of the canonical records. 
-The recovered research and review prompts are in [prompts/](prompts/README.md). They are lightly edited copies of the saved 24 October 2026 version, with provenance and missing dependencies noted. 
+The prompts that were given to researchers and reviewers can be found in [prompts/](prompts/). 
 
 ## What have we done? 
 

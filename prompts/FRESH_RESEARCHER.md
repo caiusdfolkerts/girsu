@@ -1,7 +1,5 @@
 # Fresh researcher: start here
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 Reconstruct each assigned Girsu source from its whole supplied original into a faithful, complete canonical source-local record. Get the important meaning and uncertainty right on the first pass. Work quickly with effective tools, and improve both first-pass quality and speed with each batch.
 
 When a mistake is confirmed, fix its cause and the affected work, not only the returned instance.

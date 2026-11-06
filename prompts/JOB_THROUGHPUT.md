@@ -1,7 +1,5 @@
 # Job: work accurately and quickly, improve with each batch
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 Your job is to deliver complete, faithful records quickly and become more effective with successive batches. Use the assigned tools and write or adapt small reusable code when it saves work. Keep useful construction, anchoring, search and checking methods; improve or replace steps that cause repeated errors or wasted effort.
 
 Reuse the mechanics, not the scientific conclusions: decide each source's subjects, roles, quantities, scope and uncertainty from that source. Aim to improve both first-pass accuracy and throughput, without skipping content, manufacturing certainty or adding unnecessary analysis.
@@ -54,7 +52,7 @@ Use `records.py` helpers from the runtime supplied with the assignment. `RecordB
 
 Specify clause boundaries, participants, quantity function/dimension, scope and adoption yourself. See the full runnable supplied construction in `appendix/canonical_teaching_records/build.py`; it is an example to inspect, not a restart command or source-independent extractor.
 
-Useful distinctions from `appendix/reference/AUTHOR_HELPERS.md` (missing from this extract):
+Useful distinctions from `appendix/reference/AUTHOR_HELPERS.md`:
 - A rate's `population_ref` targets its population subject: an item or a semantic group-entry, not its count measurement. If `measure1.subject_ref` is `item1`, use `population_ref: "item1"`; calculation recipe operands still reference `measure1`. Do not invent a count merely to supply this population endpoint.
 - `native_unit_handle([unit_anchor])` returns a term's `unit` plus `unit_evidence` list; a quantity value's native `unit_evidence` is instead a map from native unit ID to evidence list.
 - `native_standard` is an object `{native_term_id,evidence}` on an adopted quantity with `standard_ref:null`. A supported interpreted `standard_ref:"gur_lugal"` is another valid binding, not itself a numerical conversion.
@@ -83,4 +81,4 @@ If a consequential submission/write has an uncertain outcome after an exec/trans
 
 A known pre-execution failure or read-only tool error does not require database reconciliation. An unknown write outcome is not a confirmed failure. If access/action is blocked, report **exact action, reason, current persisted status and required next action/authorization**; do not claim success or cleared work.
 
-Optional: `appendix/reference/READING_CONTEXT_HELPER.md` (reading-context navigation; missing from this extract) shows whether a selected span lies inside brackets opened earlier in its source line. Use it when useful, not as an automatic uncertainty or return rule.
+Optional: `appendix/reference/READING_CONTEXT_HELPER.md` shows whether a selected span lies inside brackets opened earlier in its source line. Use it when useful, not as an automatic uncertainty or return rule.

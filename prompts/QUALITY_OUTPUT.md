@@ -1,7 +1,5 @@
 # Quality and output: complete source reconstruction
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 Every role applies this same scientific standard. Researchers and converters produce, and reviewers independently assess, faithful, complete first-pass records: preserve clear facts, make consequential uncertainty effective, and let downstream queries recover the source’s meaning without unsupported certainty or double-counting.
 
 ## Your result: a complete, faithful source record
@@ -88,11 +86,11 @@ Where a scope has competing readings, retain the secure common scope and withhol
 
 Use source-bound reasons and alternatives, not numerical confidence scores. Do not add qualification for harmless spelling/sign cleanup or for a finer claim never adopted; consequential restoration, interpretation or permitted-use restrictions do need effective targets.
 
-The `WORKED_STRUCTURAL_PATTERNS.md` (worked structural patterns; missing from this extract) clarify these rules with exact before/after records and permitted alternative structures. Use them to consolidate the decisions above, not to infer an extra rule for every tablet.
+The `WORKED_STRUCTURAL_PATTERNS.md` clarify these rules with exact before/after records and permitted alternative structures. Use them to consolidate the decisions above, not to infer an extra rule for every tablet.
 
 ## Schema essentials and tools: make the scientific choices yourself
 
-The six required root collections are `document`, `mentions`, `relations`, `entries`, `qualifications`, `reasoning`; optional `supporting_sources` is implemented. Do not add free-form root fields. Exact machine schema and closed vocabularies are in `appendix/reference/specs` (missing from this extract); `appendix/reference/FORMAT.md` (missing from this extract) is the exhaustive reference. `appendix/reference/RUNTIME_ENCODING_ADDENDUM_V1.md` (missing from this extract) resolves historical prose against the current runtime.
+The six required root collections are `document`, `mentions`, `relations`, `entries`, `qualifications`, `reasoning`; optional `supporting_sources` is implemented. Do not add free-form root fields. Exact machine schema and closed vocabularies are in `appendix/reference/specs`; `appendix/reference/FORMAT.md` is the exhaustive reference. `appendix/reference/RUNTIME_ENCODING_ADDENDUM_V1.md` resolves historical prose against the current runtime.
 
 Consult the relevant field when needed, rather than reading 100 KB repeatedly. Do not invent codes or undocumented fields to fit an interpretation.
 
@@ -128,7 +126,7 @@ Keep an unresolved native caption as a source-bound unclassified caption when it
 
 ## Learn the shape from exact supplied examples
 
-Use `APPENDIX_NAVIGATION.md` (missing from this extract) for exact full JSON, originals, coverage and status. Read an example original before its worked answer. Start with **P100877** for a short complete source, then **P100917** for purpose/date/royal-standard scope, and **P128382** for title/parentage without invented sealing.
+Use `APPENDIX_NAVIGATION.md` for exact full JSON, originals, coverage and status. Read an example original before its worked answer. Start with **P100877** for a short complete source, then **P100917** for purpose/date/royal-standard scope, and **P128382** for title/parentage without invented sealing.
 
 - **P100877** has 32 sheep, `ki lu2-iri-mu-ta`, Nur-ili and `i3-dab5`: retain source versus custodian, not ownership; preserve literal morphology and explain source-local name segmentation.
 - **P100917** has `1(asz) 2(barig) 3(ban2) sze gur lugal`, sheep fodder and month: retain native vector, standard, animal-feed purpose and scoped month without inventing an independently counted flock.

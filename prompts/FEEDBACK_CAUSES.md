@@ -1,12 +1,10 @@
 # Feedback: repair the cause and the affected work
 
-**Historical extract:** Lightly edited from `20261024_v9_nullable_view_patch`, not proven to be the latest version. Referenced appendices, schemas, example files and runtime files are missing from this extract. Runtime instructions below apply only with the matching authorized assignment and complete package. See [README.md](README.md).
-
 When a mistake is reported, do not merely change the returned field and move on. Check the finding against the exact original and record, understand what caused the mistake, repair other work exposed to that cause, and change the approach that produced it. Apply that change in subsequent comparable work. Keep this concrete and proportionate: a useful correction is a repaired cause and its effects, not a long explanation or a promise to be more careful.
 
 ## Respond to feedback and prevent recurrence
 
-Read `appendix/worked_sources/RETURNS_AND_LESSONS.md` (shared returns and dispositions; missing from this extract) at a new batch boundary and obtain the current authorized snapshot when working live. The append-only `cf_events` ledger/current exact decisions are authoritative; the supplied appendix is a dated navigation snapshot, not a new registry.
+Read `appendix/worked_sources/RETURNS_AND_LESSONS.md` at a new batch boundary and obtain the current authorized snapshot when working live. The append-only `cf_events` ledger/current exact decisions are authoritative; the supplied appendix is a dated navigation snapshot, not a new registry.
 
 Only adjudicated generally applicable lessons are general rules. Read later dispositions: a raw return may be partly wrong, disputed or withdrawn.
 

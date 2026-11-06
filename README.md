@@ -66,7 +66,7 @@ The review workflow then asked a separate agent to examine the whole bound sourc
 Despite it being inefficient, mistakes were sent back to the researchers directly to correct themselves, again in hopes of inducing in-context learning and decreased rates of returns. This saw significant success, and led to a net speedup of the pipeline. 
 
 The data_dictionary.md file details the structure of the canonical records. 
-The prompts that were given to researchers and reviewers can also be found in this repo. 
+The recovered research and review prompts are in [prompts/](prompts/README.md). They are lightly edited copies of the saved 24 October 2026 version, with provenance and missing dependencies noted. 
 
 ## What have we done? 
 
@@ -103,4 +103,3 @@ print(field["branches"])
 ```
 
 The [query guide](docs/COOKBOOK.md) shows how to retrieve documents, dates, institution mentions, commodities, native relations and personal occurrences, and how to export the results without losing provenance. The [data dictionary](docs/DATA_DICTIONARY.md) describes the record structure. [Reading the graph](docs/SEMANTICS.md) explains quantities, nulls, dates, identity and documentary scope.
-

@@ -23,13 +23,13 @@ Thanks to the tremendous research effort of generations of assyriologists, we've
 
 ## What I'm working on
 
-But this is only so useful. These transliterations are all written in cuneiform, and using the particular practices of cuneiform that were used by Ur III accountants. Being able to read them requires years of training, and then more years of experience and years of time. Many are complicated enough that it can take an expert days to extract the important information from them. 
+These transliterations are all written in cuneiform, using the particular practices/dialect of cuneiform that were used by Ur III accountants at the time. Being able to read them, and extract usable structure from them requires years of training, and then more years of experience and years of time. Many are complicated enough that it can take an expert days to extract the important information from them. 
 
-The problem is that individual tablets generally aren't very useful for learning new things about Ur III - individual tablets have lots of detail about a particular account or transaction, or even an aggregate, but when we want to learn about Ur III what we are interested are the big questions: how did taxation work? why did the empire collapse? was it entirely centrally planned, or were markets used in some form? how did the accounting practices change over the course of the dynasty? And to answer questions like those, you need to do research over tens of thousands of tablets, and look for trends, and test hypotheses and so on. 
+The problem is that individual tablets generally aren't very useful for learning new things about Ur III - individual tablets have lots of detail about a particular account or transaction, or even an aggregate, but in trying to learn about Ur III, what we are really interested are the big questions: how did taxation work? why did the empire collapse? was it entirely centrally planned, or were markets used in some form? how did the accounting practices change over the course of the dynasty? And to answer questions like those, you need to do research over tens of thousands of tablets, and look for trends, and test hypotheses and so on. 
 
-But since interpreting (i.e. taking a cuneiform text, and translating / extracting the important things that happen in that text) tablets takes so much time, not just translating but also reconstructing the accounting that happens, assyriology research is generally a multi-year process of finding a question with the right scope, finding texts relevant to it, interpreting and extracting structure from those texts, and then using that structure to answer the question.
+But since interpreting (i.e. taking a cuneiform text, and translating / extracting the important things that happen in that text) tablets takes so much time, assyriology research is generally a multi-year process of finding a question with limited scope, searching BDTNS to collect texts that might be relevant to the question, interpreting and extracting structure from those texts, and then using that structure to answer the question.
 
-But we could learn so much more, and we could be so much more ambitious if we had some database of structured interpretations for these tablets. We already have all the data in BDTNS - the problem is to extract the structure from it. That's what I've been trying to do here. 
+Assyriology research could answer much more ambitious and interesting questions, and Assyriologists would be significantly more empowered, if we had a BDTNS-like database of structured interpretations for accounting tablets, extracting the objects (participants in a transaction, the goods delivered detailed in a receipt, etc.) in that tablet, their relationship to eachother and role in the accounting (eg. if the accounting total is four hundred sheep, it is often the case that the transaction has two hundred sheep coming from person A, fifty from person B, and 150 from person C, so a structured record needs to include such distinctions). What makes this problem so interesting is that the data is out there in BDTNS, and it's not a question of having to do fundamental archeological research. The problem is to extract the structure from the cuneiform record. That's the problem I've been trying to solve here. 
 
 I've been using AI (mostly GPT-5.6/6.1 Sol, though I experimented with open models) to interpret 19,000 texts from the Girsu site, and to put this intepretation into a canonical record that is sufficiently structured and reliable that we can run code (eg. for doing corpus-wide accounting) and do research over the space of canonical records, rather than the tablets. I'm currently reaching out to assyriologists to assess and improve the accuracy of these interpretations, so if you're an assyriologist and you're interested in this work, please contact me! (at caiusdfolkerts@gmail.com)
 
@@ -37,7 +37,7 @@ I've been using AI (mostly GPT-5.6/6.1 Sol, though I experimented with open mode
 
 I worked over 19,000 Girsu texts from the CDLI database. 
 
-Here's a rough overview of the pipeline I built. Using code, I divided source interpretation into tasks (where one task might be a batch of 80 sources), and the code was written to extract similarities / flag keywords such that batches consisted of tablets that might need similar methods for interpretation, in the hope that agents would discover patterns and figure out how to be more efficient. I tried to prompt this kind of self-improvement into the process, with mixed success. These tasks were then put into a shared task queue, to avoid agents being idle, that distributed source work across parallel interpretation agents and a separate reviewer pool. This queue also keeps track of the source being worked on and the version submitted for review. If you're into such things, I had ChatGPT draw a flowchart of the process below. 
+Here's an overview of the pipeline I used with AI. Using code, I divided source interpretation into tasks (where one task might be a batch of 80 sources), and the code was written to extract similarities / flag keywords such that batches consisted of tablets that might need similar methods for interpretation, in the hope that agents would discover patterns and become more efficient via in-context learning. I also tried to explicitly prompt this kind of self-improvement into the process, with mixed success and often negative side effects. These tasks were then put into a shared task queue, to avoid leaving agents idle, that distributed source work across parallel interpretation agents and a separate reviewer pool. This queue also keeps track of the source being worked on and the version submitted for review. At peak, this pipeline worked with six agents working in parallel: four agents and two reviewers.  If you're into such things, I had ChatGPT draw a schematic of the process below. 
 
 ```mermaid
 flowchart TD
@@ -63,27 +63,23 @@ Every such statement can be traced to the exact version of its source. The text,
 
 The review workflow then asked a separate agent to examine the whole bound source and its structured meaning. The review contract required confirmation that the complete original was reviewed, that the structured meaning was checked and that the qualifications were checked. Particular attention is paid to attachment, operators and units, documentary stage, arithmetic membership and the justification of adopted inferences.
 
-Despite being inefficient, mistakes were sent back to the researchers directly to correct themselves, in hopes of inducing self improvement and decreased rates of returns. 
+Despite it being inefficient, mistakes were sent back to the researchers directly to correct themselves, again in hopes of inducing in-context learning and decreased rates of returns. This saw significant success, and led to a net speedup of the pipeline. 
 
 The data_dictionary.md file details the structure of the canonical records. 
 The prompts that were given to researchers and reviewers can also be found in this repo. 
 
-## What I've produced.
+## What have we done? 
 
-I've run this research-review pipeline over 19,000 source texts from the Girsu site, taking roughly one-and-a-half months in total, and producing structured documents in the canonical record format detailed in data_dictionary.md extracting 
+I've run this research-review pipeline over ~18,412 CDLI database source texts from the Girsu site, taking roughly one-and-a-half months from the first to the last interpreted source. There was significant iteration to the pipeline during the work, and the pipeline described above was the running system for less than half of that time. 
+The structured interpretation and canonical records of all these sources can be found in this repo.
 
 The collection can be queried by documentary content: commodities, quantities, people as written occurrences, institutions, places, dates, roles and relationships. Results retain the source and field that produced them. You can move from a corpus-wide search to a particular assertion and then to the passage and reasoning that support it.
 
-Consider an account with detailed entries and a total. A useful representation must say which measurements belong to that total. Otherwise a program can find all the numbers but cannot know what to add. Likewise, a tablet and its envelope may describe the same goods. Counting each representation as a new delivery would change the history. In P105740, the record makes the membership of the two one-sheep details in the two-sheep total explicit and preserves the documentary relationship between the witnesses.
-
-This is the work the graph makes reusable. It exposes the interpretation of a document in a form that can be checked and manipulated, while keeping its scope. It does not resolve all people with similar names into global identities or declare that every pair of related documents records one transaction. Those are research questions to pursue over the records.
-
-The current canonical records contain 172,723 entries, 149,429 mentions, 171,251 relation objects and 165,959 measurements. They also contain 251,231 qualifications and 246,756 reasoning objects. These counts describe the preserved records, not distinct historical events or people.
-
+The current canonical records contain 172,723 entries, 149,429 mentions, 171,251 relation objects and 165,959 measurements. They also contain 251,231 qualifications and 246,756 reasoning objects. 
 
 ## Start using it
 
-Clone the private repository using an account with access. The reader requires Python 3.11 or later and only the standard library. It needs no database server, external service or original production workspace.
+Clone this repo, and you're off to the races! Reader requires Python 3.11 or later and only the standard library. 
 
 ```sh
 git clone https://github.com/caiusdfolkerts/girsu.git
@@ -108,4 +104,3 @@ print(field["branches"])
 
 The [query guide](docs/COOKBOOK.md) shows how to retrieve documents, dates, institution mentions, commodities, native relations and personal occurrences, and how to export the results without losing provenance. The [data dictionary](docs/DATA_DICTIONARY.md) describes the record structure. [Reading the graph](docs/SEMANTICS.md) explains quantities, nulls, dates, identity and documentary scope.
 
-Girsu provides the interpreted source layer for a research programme: a collection that can be searched systematically, investigated at the level of individual claims, and extended through new historical work.

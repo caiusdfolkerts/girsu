@@ -14,24 +14,30 @@ This accounting system meant that the kings of Ur could organise large parts of 
 
 But to make all this work took an incredible accounting effort. Every delivery, transfer, or assignment was recorded by scribes on a small clay tablet. Foremen would report to accountants with the total workmen-days and the work completed. Many of these tablets were then enclosed in a second layer of clay forming an envelope. These records were then sent to provincial administrative offices, and some to the royal capital, for verification and accounting, and here individual receipts were aggregated into monthly or annual accounts showing how much an institution/individual had spent, received, and still owed relative to their obligations. Deficits were carried forward into the next accounting cycle. Then in aggregate, these accounts showed provincial governers whether or not they were meeting their obligation to the royal government, while the royal government could track contributions from the provinces and coordinate the redistribution of resources across the kingdom.
 
+------
+
 Ur III was first discovered in 1853 by John George Taylor, who uncovered the first Ur tablets when investigating Tell el-Muqayyar. Over the roughly 108 year lifespan of Ur III, we've recovered over 120,000 Ur III administrative tablets and other documents. Most (~77% of BDTNS) of these texts come from three main archeological sites: Girsu, which was the administrative centre of the wealthy Lagash province, Umma, which was the capital of the Umma province, and Puzriš-Dagān, which was a royal administrative centre established under Shulgi for livestock.
 
-Thanks to the tremendous research effort of generations of assyriologists, we have transliterations for around 75,000 Ur III administrative tablets. Almost all of these transliterations have been digitised by the BDTNS project. 
-
+Thanks to the tremendous research effort of generations of assyriologists, we've transliterations for around 75,000 Ur III administrative tablets. Almost all of these transliterations have been digitised by the BDTNS project. 
 
 
 ## What I'm working on
 
-Individual tablets 
-But to do research and learn about Ur III, the problem is to intepret these sources, There are only a few hundred researchers alive today who can interpret individual sources and thus do productive research on BDTNS.
+But this is only so useful. These transliterations are all written in cuneiform, and using the particular practices of cuneiform that were used by Ur III accountants. Being able to read them requires years of training, and then more years of experience and years of time. Many are complicated enough that it can take an expert days to extract the important information from them. 
 
-To do this requires training in cuneiform, and experience with the texts. Using AI (a mixture of gpt-5.6 sol, gpt-6.1 sol and gpt-6 astra were used) this project uses AI to interpret all 19,000 Drehem texts, and put them into a canonical format, describing participants, their relationships. This opens the doors to a whole new category of assyriology research, where we can now work over these structured intepretation documents and the relationships between them quickly and efficiently, rather than spending years reconstructing individual source texts.
+The problem is that individual tablets generally aren't very useful for learning new things about Ur III - individual tablets have lots of detail about a particular account or transaction, or even an aggregate, but when we want to learn about Ur III what we are interested are the big questions: how did taxation work? why did the empire collapse? was it entirely centrally planned, or were markets used in some form? how did the accounting practices change over the course of the dynasty? And to answer questions like those, you need to do research over tens of thousands of tablets, and look for trends, and test hypotheses and so on. 
 
-We are expanding this method; this project will soon contain canonical records for all non-ATF sources across BDTNS. I am currently expanding source coverage to include Puzriš-Dagān, . 
+But since interpreting (i.e. taking a cuneiform text, and translating / extracting the important things that happen in that text) tablets takes so much time, not just translating but also reconstructing the accounting that happens, assyriology research is generally a multi-year process of finding a question with the right scope, finding texts relevant to it, interpreting and extracting structure from those texts, and then using that structure to answer the question.
+
+But we could learn so much more, and we could be so much more ambitious if we had some database of structured interpretations for these tablets. We already have all the data in BDTNS - the problem is to extract the structure from it. That's what I've been trying to do here. 
+
+I've been using AI (mostly GPT-5.6/6.1 Sol, though I experimented with open models) to interpret 19,000 texts from the Girsu site, and to put this intepretation into a canonical record that is sufficiently structured and reliable that we can run code (eg. for doing corpus-wide accounting) and do research over the space of canonical records, rather than the tablets. I'm currently reaching out to assyriologists to assess and improve the accuracy of these interpretations, so if you're an assyriologist and you're interested in this work, please contact me! (at caiusdfolkerts@gmail.com)
 
 ## How I'm doing it
 
-A shared task queue distributed source work across parallel interpretation agents and a separate reviewer pool. The queue tracked the source being worked on and the version submitted for review, so parallelism did not mean untracked edits to the same record. Interpretation and review could proceed on different sources at the same time.
+I worked over 19,000 Girsu texts from the CDLI database. 
+
+Here's a rough overview of the pipeline I built. Using code, I divided source interpretation into tasks (where one task might be a batch of 80 sources), and the code was written to extract similarities / flag keywords such that batches consisted of tablets that might need similar methods for interpretation, in the hope that agents would discover patterns and figure out how to be more efficient. I tried to prompt this kind of self-improvement into the process, with mixed success. These tasks were then put into a shared task queue, to avoid agents being idle, that distributed source work across parallel interpretation agents and a separate reviewer pool. This queue also keeps track of the source being worked on and the version submitted for review. If you're into such things, I had ChatGPT draw a flowchart of the process below. 
 
 ```mermaid
 flowchart TD
@@ -45,20 +51,26 @@ flowchart TD
     F --> G[Graph assembly and default selection]
     G --> H[Validation and private release]
 ```
+The input for an authoring task was a CDLI transliterated text, together with that text's generated SHA-256 hash. Code provided stable identifiers, exact evidence coordinates, structural checks and graph assembly. A separate reviewer workflow checked interpretations against the bound source and returned corrections. Each record retains its authorship, review decisions and interpretive history. 
 
-The diagram shows the standard review route. A defined cohort of 623 sources used an authorised author-self-check route; the per-record history preserves that distinction. Corrections produced new versions, and the graph was assembled from explicitly selected record versions. The released repository contains the result and its scientific provenance, without requiring the task system that produced it.
+At the start of a context, an agent was given a prompt document which we iterated on over time (by asking agents that made mistakes why they thought they made the mistake, for areas where the task / expected output wasn't described clearly enough), based on repeated failures and mistakes. Separately, whenever reviewer agents found a mistake in a researcher agent's work, the researcher agent was instructed to write to an individual document, some of which became part of the next prompt, the mistake and how to update its policy to not make such mistakes in the future. This saw a significant decrease in reviewer returns, going from ~20% to ~7%. 
 
-## The interpretation method
-
-We used AI agents to read individual sources into a common record structure. The task was to interpret the whole supplied text, including its closing clauses, seals and envelopes, and record what its statements mean. Code provided stable identifiers, exact evidence coordinates, structural checks and graph assembly. A separate agent-review workflow checked interpretations against the bound source and returned corrections. Each record retains its authorship, review decisions and interpretive history. The methods and provenance documents explain the review process and its recorded exceptions.
+Importantly, researcher agents were instructed to preserve uncertainty, for example in missing optional structure, an explicit null due to broken transliteration, or qualifications to its conclusion. Such qualifications were included as a dedicated reasoning section of the records. In cases where there was sufficient ambiguity present for there to be two possible interpretations, the final records contained both records. For the purposes of this pilot, I decided it was better to be conservative about accepting potentially false interpretations. 
 
 The resulting record contains much more than a transcription with names and numbers attached. It distinguishes a recipient from a witness, a quantity from a rate, a written total from a calculated check, and a person mentioned in a seal from a person participating in an entry. It records which details a subtotal includes, where a date applies, and when two parts of a document represent the same material. Interpretive alternatives have explicit targets and reasons.
 
 Every such statement can be traced to the exact version of its source. The text, its structured interpretation and the default used for analysis are preserved separately. That makes it possible to improve an interpretation without losing the evidence from which it was made.
 
-The [method](docs/METHODS.md) describes this process in full, from source selection through interpretation, review and assembly.
+The review workflow then asked a separate agent to examine the whole bound source and its structured meaning. The review contract required confirmation that the complete original was reviewed, that the structured meaning was checked and that the qualifications were checked. Particular attention is paid to attachment, operators and units, documentary stage, arithmetic membership and the justification of adopted inferences.
 
-## What can you do with it
+Despite being inefficient, mistakes were sent back to the researchers directly to correct themselves, in hopes of inducing self improvement and decreased rates of returns. 
+
+The data_dictionary.md file details the structure of the canonical records. 
+The prompts that were given to researchers and reviewers can also be found in this repo. 
+
+## What I've produced.
+
+I've run this research-review pipeline over 19,000 source texts from the Girsu site, taking roughly one-and-a-half months in total, and producing structured documents in the canonical record format detailed in data_dictionary.md extracting 
 
 The collection can be queried by documentary content: commodities, quantities, people as written occurrences, institutions, places, dates, roles and relationships. Results retain the source and field that produced them. You can move from a corpus-wide search to a particular assertion and then to the passage and reasoning that support it.
 
@@ -95,25 +107,5 @@ print(field["branches"])
 ```
 
 The [query guide](docs/COOKBOOK.md) shows how to retrieve documents, dates, institution mentions, commodities, native relations and personal occurrences, and how to export the results without losing provenance. The [data dictionary](docs/DATA_DICTIONARY.md) describes the record structure. [Reading the graph](docs/SEMANTICS.md) explains quantities, nulls, dates, identity and documentary scope.
-
-## The corpus
-
-Girsu was a Sumerian city at modern Tello in southern Iraq. It belonged to the state of Lagash, whose name can also refer to a separate city at modern al-Hiba. The principal setting of this collection is the Ur III period, the Third Dynasty of Ur, broadly the twenty-first century BCE.
-
-The surviving documents show administrative life at close range: receipts, accounts, expenditure, workforces, inventories, legal matters and correspondence. They describe people acting in institutional roles, the movement and allocation of goods, and the recording of responsibility. They are especially valuable for studying how administration worked because they preserve individual entries and decisions rather than only royal accounts of government.
-
-In this release, 8,979 current records are classified as accounts, 3,494 as receipts and 1,090 as expenditure. There are also personnel lists, inventories, legal records and letters. Other records retain a less specific or unresolved genre. A site's administrative corpus is not one institution's archive, and a place mentioned inside a text is not necessarily where that text originated.
-
-## Where the texts came from
-
-The project's upstream acquisition code records a collection assembled from CDLI catalogue data and scholarly transliterations. The Girsu corpus was reconciled against a preserved catalogue export by its Girsu site-group field. It contains 30,256 catalogue IDs: 19,208 with saved ATF text and 11,048 without it. The latter are retained as a documentary appendix, not represented as interpreted texts.
-
-CDLI is the Cuneiform Digital Library Initiative. BDTNS, the Database of Neo-Sumerian Texts, is a closely related scholarly resource and part of the editorial setting of this material; the project also used it for a limited earlier comparison. BDTNS was not the direct download source for the whole release. ATF is the transliteration format, not a separate ancient archive. These distinctions, the acquisition evidence and the underlying scholarly work are explained in [Sources](docs/SOURCES.md).
-
-There are 18,409 current canonical records and three explicitly archival records. The remaining registered sources retain their documented dispositions. This is a defined digital corpus with recorded coverage, not a claim to possess every surviving Girsu text or to have interpreted every catalogue entry.
-
-## Checking and extending the work
-
-The source texts and canonical record bytes are preserved with hashes. The release manifest binds the files, and the tests exercise the reader's default selection, evidence access, searches and graph behaviour. The original release passed 27 consumer and query-example tests, alongside independent preservation and package audits. [Validation](docs/VALIDATION.md) explains what those checks establish, and [Provenance](docs/PROVENANCE.md) records the populations, version history and review distinctions.
 
 Girsu provides the interpreted source layer for a research programme: a collection that can be searched systematically, investigated at the level of individual claims, and extended through new historical work.
